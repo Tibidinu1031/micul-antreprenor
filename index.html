@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Micul Antreprenor — Condu-ți propriul stand</title>
+<title>Micul Antreprenor — 24 de aventuri cu limonadă și hot dog</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=17">
+<link rel="stylesheet" href="styles.css?v=18">
 </head>
 <body>
 
@@ -19,7 +19,7 @@
       <button class="lang-btn" data-lang="en">English</button>
     </div>
 
-    <div class="start-badge">🍋 &nbsp;🌭</div>
+    <div class="start-badge">🍋 &nbsp;🌭 &nbsp;🗺️</div>
     <h1 class="start-title" data-i18n="start.title">Micul Antreprenor</h1>
     <p class="start-sub" data-i18n-html="start.sub"></p>
 
@@ -27,19 +27,23 @@
       <label class="field-label" for="standName" data-i18n="start.nameLabel">Dă-i un nume standului tău</label>
       <input id="standName" class="text-input" type="text" maxlength="22" data-i18n-ph="start.namePlaceholder" autocomplete="off">
 
+      <label class="field-label" data-i18n="start.modeLabel">Alege aventura</label>
+      <div class="mode-groups" id="modeGroups"></div>
+      <div class="mode-pick" id="modePick"></div>
+
       <label class="field-label" data-i18n="start.diffLabel">Alege-ți provocarea</label>
       <div class="seg" id="difficulty" role="radiogroup">
         <button class="seg-btn is-on" data-diff="easy" role="radio" aria-checked="true">
           <span class="seg-name" data-i18n="diff.easy">Începător</span>
-          <span class="seg-note" data-i18n="diff.easy.note"></span>
+          <span class="seg-note"></span>
         </button>
         <button class="seg-btn" data-diff="normal" role="radio" aria-checked="false">
           <span class="seg-name" data-i18n="diff.normal">Fondator</span>
-          <span class="seg-note" data-i18n="diff.normal.note"></span>
+          <span class="seg-note"></span>
         </button>
         <button class="seg-btn" data-diff="hard" role="radio" aria-checked="false">
           <span class="seg-name" data-i18n="diff.hard">Magnat</span>
-          <span class="seg-note" data-i18n="diff.hard.note"></span>
+          <span class="seg-note"></span>
         </button>
       </div>
 
@@ -61,10 +65,10 @@
   <header class="topbar">
     <div class="topbar-in">
       <div class="tb-brand">
-        <span class="tb-logo">🍋</span>
+        <span class="tb-logo" id="tbLogo">🍋</span>
         <div>
           <div class="tb-name" id="tbStandName">—</div>
-          <div class="tb-role" data-i18n="tb.role">Tu · Fondator și Șef</div>
+          <div class="tb-role" id="tbRole">Tu · Fondator și Șef</div>
         </div>
       </div>
 
@@ -116,7 +120,11 @@
           </div>
         </div>
         <div class="fc-event" id="fcEvent" hidden></div>
+        <div class="fc-twist" id="fcTwist"></div>
       </section>
+
+      <!-- Decision of the day -->
+      <section class="card card-decision" id="cardBox" hidden></section>
 
       <!-- Menu & prices -->
       <section class="card">
@@ -178,6 +186,15 @@
         <h3 class="sub-title"><span data-i18n="grow.upg">Îmbunătățiri</span> <small data-i18n="grow.upgSub"></small></h3>
         <div class="upgrade-grid" id="upgradeGrid"></div>
       </section>
+
+      <!-- New stands -->
+      <section class="card card-spots">
+        <div class="card-head">
+          <h2 class="card-title" data-i18n="spots.title">Deschide standuri noi</h2>
+          <span class="card-hint" data-i18n="spots.hint"></span>
+        </div>
+        <div class="spot-grid" id="spotGrid"></div>
+      </section>
     </div>
 
     <!-- Sticky plan panel -->
@@ -195,8 +212,10 @@
         <div class="plan-rows">
           <div class="prow"><span data-i18n="plan.supplies">Provizii cumpărate</span><b id="prSupplies">$0.00</b></div>
           <div class="prow"><span data-i18n="plan.rent">Chiria standului</span><b id="prRent">$0.00</b></div>
+          <div class="prow" hidden><span data-i18n="plan.spots">Chiria standurilor noi</span><b id="prSpots">$0.00</b></div>
           <div class="prow"><span data-i18n="plan.staff">Ajutor</span><b id="prStaff">$0.00</b></div>
           <div class="prow"><span data-i18n="plan.marketing">Reclamă</span><b id="prMarketing">$0.00</b></div>
+          <div class="prow" hidden><span data-i18n="plan.card">Decizia zilei</span><b id="prCard">$0.00</b></div>
           <div class="prow prow-total"><span data-i18n="plan.total">Bani puși în joc azi</span><b id="prTotal">$0.00</b></div>
         </div>
 
@@ -242,7 +261,7 @@
             <stop offset="100%" id="skyBottom" stop-color="#DFF4FF"/>
           </linearGradient>
           <linearGradient id="groundGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#96D67F"/><stop offset="100%" stop-color="#6FBF5C"/>
+            <stop offset="0%" id="groundTop" stop-color="#96D67F"/><stop offset="100%" id="groundBottom" stop-color="#6FBF5C"/>
           </linearGradient>
           <linearGradient id="awning" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="#FF8A5B"/><stop offset="100%" stop-color="#EF5A3C"/>
@@ -254,14 +273,11 @@
         <g id="cloudGroup" opacity="0"></g>
         <g id="rainGroup" opacity="0"></g>
 
-        <g opacity=".55">
-          <rect x="40"  y="212" width="86" height="90" rx="6" fill="#D8CFC0"/><polygon points="30,214 83,178 136,214" fill="#B7A894"/>
-          <rect x="176" y="228" width="70" height="74" rx="6" fill="#E3DACB"/><polygon points="168,230 211,200 254,230" fill="#C4B5A1"/>
-          <rect x="640" y="220" width="94" height="82" rx="6" fill="#DED5C6"/><polygon points="630,222 687,188 744,222" fill="#BEAF9B"/>
-        </g>
+        <g id="bgGroup"></g>
 
         <rect x="0" y="300" width="900" height="120" fill="url(#groundGrad)"/>
-        <rect x="0" y="300" width="900" height="7" fill="#5FAE4E" opacity=".55"/>
+        <rect x="0" y="300" width="900" height="7" id="groundLine" fill="#5FAE4E" opacity=".55"/>
+        <g id="extraStands"></g>
 
         <g transform="translate(300,150)">
           <rect x="8" y="96" width="284" height="118" rx="10" fill="#F6E3C4"/>
@@ -356,7 +372,7 @@
     <div class="fin-stats" id="finStats"></div>
 
     <section class="card">
-      <div class="card-head"><h3 class="card-title" data-i18n="fin.season">Cele 14 zile ale tale</h3>
+      <div class="card-head"><h3 class="card-title" id="finSeason">Cele 14 zile ale tale</h3>
         <span class="card-hint" data-i18n="fin.seasonHint"></span></div>
       <div class="chart-holder" id="finChart"></div>
     </section>
@@ -366,8 +382,11 @@
       <div class="badge-grid" id="finBadges"></div>
     </section>
 
-    <div class="rp-actions">
-      <button class="btn btn-primary btn-xl" id="btnReplay" data-i18n="fin.replay">Mai încearcă o dată 🔁</button>
+    <section class="card fin-map" id="finMap"></section>
+
+    <div class="rp-actions rp-actions-2">
+      <button class="btn btn-soft btn-xl" id="btnAgain" data-i18n="fin.again">Încă o dată aici 🔁</button>
+      <button class="btn btn-primary btn-xl" id="btnReplay" data-i18n="fin.replay">Altă aventură 🗺️</button>
     </div>
   </div>
 </section>
@@ -384,6 +403,7 @@
       <li data-i18n-html="how.3"></li>
       <li data-i18n-html="how.4"></li>
       <li data-i18n-html="how.5"></li>
+      <li data-i18n-html="how.6"></li>
     </ol>
 
     <h3 class="how-h" data-i18n="how.words">Cuvinte pe care le folosește un fondator adevărat</h3>
@@ -398,6 +418,17 @@
     </dl>
 
     <button class="btn btn-primary btn-block" id="howGo" data-i18n="how.go">Am înțeles</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ ADVENTURE INTRO ══════════════════════════════ -->
+<div class="modal" id="introModal" hidden>
+  <div class="modal-card modal-sm modal-intro" role="dialog" aria-modal="true">
+    <div class="intro-emoji" id="introEmoji">🏘️</div>
+    <h2 class="modal-title intro-title" id="introTitle">—</h2>
+    <p class="intro-twist" id="introTwist"></p>
+    <ul class="intro-tips" id="introTips"></ul>
+    <button class="btn btn-primary btn-xl btn-block" id="introGo" data-i18n="intro.go">Să începem! 🚀</button>
   </div>
 </div>
 
@@ -435,7 +466,7 @@
 
 <div class="toast-stack" id="toastStack"></div>
 
-<script src="i18n.js?v=17"></script>
-<script src="game.js?v=17"></script>
+<script src="i18n.js?v=18"></script>
+<script src="game.js?v=18"></script>
 </body>
 </html>

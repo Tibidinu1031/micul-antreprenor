@@ -1,11 +1,14 @@
-# 🍋 Șeful Cartierului / Boss of the Block
+# 🍋 Șeful Cartierului / The Little Founder
 
-Un simulator de afaceri pentru copii de ~10 ani. Ești fondatorul și șeful unui
-stand de limonadă și hot dog de la colțul străzii, și ai 14 zile ca să transformi
-banii de start în profit adevărat.
+Un simulator de afaceri pentru copii de clasele 1–4. Ești fondatorul și șeful unui
+stand de limonadă și hot dog, alegi una dintre **24 de aventuri** (plajă, stadion,
+pârtie de schi, aeroport, târg de Crăciun…) și ai un sezon ca să transformi banii
+de start în profit adevărat — inclusiv deschizând standuri noi și luând decizii
+în fiecare zi.
 
-*A business simulator for ~10-year-olds. The game ships in Romanian by default,
-with a Română / English switch on the title screen and in the stand menu.*
+*A business simulator for 6–10-year-olds with 24 adventures, extra stands to open
+and a decision card most days. The game ships in Romanian by default, with a
+Română / English switch on the title screen and in the stand menu.*
 
 ## Cum se joacă / Playing it
 
@@ -14,16 +17,45 @@ Dublu-click pe **`index.html`**. Atât — fără instalare, fără server, făr
 Progresul se salvează automat. Închizi fila în mijlocul sezonului și te așteaptă
 un buton **Continuă** când te întorci.
 
+## Cele 24 de aventuri
+
+Fiecare aventură e un alt loc în care vinzi aceleași două produse, dar cu altă
+vreme, altă aglomerație, altă chirie, alte evenimente, alt decor animat și o
+**regulă specială** explicată într-o propoziție pe ecranul de start.
+
+| Grupă | Aventuri |
+|---|---|
+| ☀️ La soare | Colțul străzii · Plaja · Parcul mare · Piscina · Tabăra de vară (10 zile) · Satul bunicilor |
+| 🏙️ În oraș | Centrul orașului · Gara · Mall-ul · Cinema · Campus · Curtea școlii |
+| 🎉 Lume multă | Bâlciul (10 zile) · Stadionul · Festival (7 zile) · Zoo · Portul · Aeroportul |
+| ❄️ Frig și ploaie | Pârtia de schi · Patinoarul · Târgul de toamnă (12 zile) · Târgul de Crăciun (12 zile) · Muzeul · Popas la munte |
+
+Câteva exemple de reguli speciale: pe plajă gheața se topește de trei ori mai
+repede; la stadion e meci la fiecare 3 zile și liniște în rest; la muzeu zilele
+ploioase sunt cele mai bune; la aeroport totul e scump — și ce vinzi, și chiria;
+la școală copiii vor prețuri mici și weekendul e închis; la festival mulțimea e
+uriașă, dar fără ajutoare coada explodează.
+
+Aventurile câștigate primesc un 🏆 pe hartă, iar recordul se ține minte.
+
 ## Ciclul unei zile
 
 1. **Citește prognoza.** Vremea, ziua săptămânii și evenimentele (o paradă, un
-   food truck rival, o excursie școlară) schimbă câtă lume trece pe stradă și ce
-   are chef să cumpere. Zi caniculară → limonadă. Răcoare → hot dog.
-2. **Ia deciziile.** Alegi rețeta, pui prețurile, cumperi proviziile și hotărăști
+   meci, un vapor, o furtună) schimbă câtă lume trece pe lângă stand și ce are
+   chef să cumpere. Zi caniculară → limonadă. Răcoare → hot dog.
+2. **Răspunde la decizia zilei.** În majoritatea zilelor apare un cartonaș cu
+   două butoane: o comandă mare pentru o petrecere, un sponsor pentru echipa
+   de fotbal, un fermier cu lămâi la jumătate de preț, un împrumut de la bancă,
+   vărul care vrea 10% din încasări, un concurs cu premiu… Fiecare opțiune își
+   arată efectele în cuvinte simple (💵 −$20 · ⭐ +8).
+3. **Ia deciziile.** Alegi rețeta, pui prețurile, cumperi proviziile și hotărăști
    dacă dai bani pe reclamă, pe un ajutor sau pe o îmbunătățire permanentă.
-3. **Deschide standul.** Urmărești ziua cum se desfășoară — clienții vin, cumpără,
-   iar contorul de bani urcă.
-4. **Citește cifrele.** O situație reală de profit și pierdere, banii urmăriți pas
+4. **Crește.** Din ziua 3 (și apoi din ziua 6) poți **deschide un stand nou**
+   într-un alt loc din aceeași aventură: costă o dată, are chiria lui pe zi,
+   aduce cu 45–90% mai mulți clienți și poate fi închis în zilele slabe.
+5. **Deschide standul.** Urmărești ziua cum se desfășoară — clienții vin, cumpără,
+   iar contorul de bani urcă. Standurile noi apar în fundal.
+6. **Citește cifrele.** O situație reală de profit și pierdere, banii urmăriți pas
    cu pas, și un sfat concret de la Antrenorul Ollie.
 
 ## Ce învață de fapt
@@ -44,24 +76,30 @@ Cifrele *sunt* lecția, deci toate sunt reale și toate se văd:
 | **ROI** | Reclama și ajutorul trebuie să aducă înapoi mai mult decât costă, altfel antrenorul îți atrage atenția. |
 | **Investiție** | Îmbunătățirile costă o dată și se amortizează în zilele rămase — dar doar dacă le cumperi devreme. |
 | **Reputație** | Raportul bun calitate-preț și serviciul constant aduc mai mulți clienți mâine. |
+| **Scalare** | Un stand nou aduce mai mulți clienți, dar plătești două chirii. Antrenorul îți spune dacă a meritat. |
+| **Împrumut vs profit** | Banii de la bancă apar în fluxul de numerar, nu în profit. Doar dobânda e un cost. |
+| **Risc** | Concursul costă $10 și dă $40 doar dacă vinzi destul. Merită doar când șansele sunt de partea ta. |
 
 ## Dificultate
 
-| Mod | Start | Țintă | Diferența |
-|---|---|---|---|
-| Începător | $200 | $425 | Chirie mică, clienți iertători |
-| Fondator | $150 | $475 | Clienții îți observă prețurile |
-| Magnat | $100 | $525 | Clienți foarte pretențioși — umfli prețul, pleacă |
+| Mod | Start | Diferența |
+|---|---|---|
+| Începător | $200 | Chirie mică, clienți iertători |
+| Fondator | $150 | Clienții îți observă prețurile |
+| Magnat | $100 | Clienți foarte pretențioși — umfli prețul, pleacă |
 
-Începător se câștigă jucând cu cap. Fondator cere să fii atent la prognoză și la
-prețuri. Magnat presupune că ai învățat deja jocul.
+Ținta de bani depinde de aventură și se afișează pe ecranul de start (de la
+$370 în Tabăra de vară până la $780 la Muzeu, pe Magnat). Echilibrul, verificat
+cu o simulare automată pe toate cele 72 de combinații: Începător se câștigă
+jucând cu cap, fără să deschizi nimic; Fondator cere cel puțin o îmbunătățire
+sau un stand nou folosit bine; Magnat presupune că folosești toate pârghiile.
 
 ## Meniul standului (butonul ⋯)
 
 - **Redenumește standul** — se schimbă și firma pictată de pe stand.
 - **Schimbă limba** — Română / English, fără să pierzi partida în curs.
-- **Reia sezonul** — același stand, de la ziua 1, cu vreme nouă.
-- **Stand nou** — înapoi la ecranul de start pentru alt nume și altă provocare.
+- **Reia sezonul** — aceeași aventură, de la ziua 1, cu vreme nouă.
+- **Aventură nouă** — înapoi la harta cu cele 24 de locuri.
 
 ## Fișiere
 
@@ -74,7 +112,12 @@ game.js       simularea, economia, animația, graficele
 
 Fără dependențe, fără build. Economia stă în blocul de configurare din capul lui
 `game.js` — prețuri, rețete, îmbunătățiri, vreme și dificultate sunt date simple,
-sigur de modificat. Textele se schimbă doar în `i18n.js`.
+sigur de modificat. Cele 24 de aventuri sunt lista `MODES` (fiecare număr e un
+multiplicator față de colțul străzii), cartonașele sunt `CARDS`, iar decorurile
+animate sunt `BACKDROPS`. Textele se schimbă doar în `i18n.js`.
+
+Pentru verificarea echilibrului, `game.js` expune `window.BOB` (motorul fără
+interfață), astfel încât un script Node poate juca sezoane întregi.
 
 > **Notă despre monedă:** sumele sunt în dolari, pentru că economia e echilibrată
 > pe aceste valori. Se pot converti în lei înmulțind uniform toate sumele din
