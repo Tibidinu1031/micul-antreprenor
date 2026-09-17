@@ -26,7 +26,7 @@ vreme, altă aglomerație, altă chirie, alte evenimente, alt decor animat și o
 
 | Lume | Aventuri |
 |---|---|
-| ☀️ La soare | Colțul străzii · Plaja · Parcul mare · Piscina · Tabăra de vară · Satul bunicilor · Parcul acvatic · Malul lacului · Livada · Floarea-soarelui |
+| ☀️ La soare | Standul din Cartier · Plaja · Parcul mare · Piscina · Tabăra de vară · Satul bunicilor · Parcul acvatic · Malul lacului · Livada · Floarea-soarelui |
 | 🏙️ În oraș | Centrul orașului · Gara · Mall-ul · Cinema · Campus · Curtea școlii · Centrul vechi · Metroul · Parcul de birouri · Biblioteca |
 | 🎉 Lume multă | Bâlciul · Stadionul · Festival · Portul · Aeroportul · Circul · Carnavalul · Revelionul · Piața centrală · Expoziția |
 | ❄️ Iarnă | Pârtia de schi · Patinoarul · Târgul de Crăciun · Cabana · Dealul cu sănii · Festivalul de gheață · Hochei · Snowpark · Satul lui Moș Crăciun · Băile termale |
@@ -125,7 +125,7 @@ game.js       simularea, economia, animația, graficele
 Fără dependențe, fără build. Economia stă în blocul de configurare din capul lui
 `game.js` — prețuri, rețete, îmbunătățiri, vreme și dificultate sunt date simple,
 sigur de modificat. Cele 100 de aventuri sunt lista `MODES` (fiecare număr e un
-multiplicator față de colțul străzii), țintele lor sunt `MODE_GOALS`, cartonașele
+multiplicator față de Standul din Cartier), țintele lor sunt `MODE_GOALS`, cartonașele
 sunt `CARDS`, iar decorurile animate sunt `BACKDROPS` (primele 24 desenate de
 mână) și `SCENES` (restul, descrise ca date: culoarea solului, câteva piese de
 decor reutilizabile și emoji așezate pe scenă). Textele se schimbă doar în

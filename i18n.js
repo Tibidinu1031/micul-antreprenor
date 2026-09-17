@@ -836,7 +836,7 @@ addStrings('ro', {
   'badge.chain.name': 'Lanț de standuri', 'badge.chain.desc': 'Deschizi ambele standuri noi',
 
   /* adventures */
-  'mode.street.name': 'Colțul străzii',
+  'mode.street.name': 'Standul din Cartier',
   'mode.street.twist': 'Locul clasic. Vecinii trec pe aici în fiecare zi. Perfect ca să înveți.',
   'mode.beach.name': 'Plaja',
   'mode.beach.twist': 'Soare și sete mare! Dar gheața se topește foarte repede — o ladă frigorifică face minuni.',
