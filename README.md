@@ -1,14 +1,14 @@
 # 🍋 Șeful Cartierului / The Little Founder
 
 Un simulator de afaceri pentru copii de clasele 1–4. Ești fondatorul și șeful unui
-stand de limonadă și hot dog, alegi una dintre **24 de aventuri** (plajă, stadion,
-pârtie de schi, aeroport, târg de Crăciun…) și ai un sezon ca să transformi banii
-de start în profit adevărat — inclusiv deschizând standuri noi și luând decizii
-în fiecare zi.
+stand de limonadă și hot dog, alegi una dintre **100 de aventuri** (plajă, stadion,
+pârtie de schi, aeroport, târg de Crăciun, safari, baza de pe Lună…) și ai un sezon
+ca să transformi banii de start în profit adevărat — inclusiv deschizând standuri
+noi și luând decizii în fiecare zi.
 
-*A business simulator for 6–10-year-olds with 24 adventures, extra stands to open
-and a decision card most days. The game ships in Romanian by default, with a
-Română / English switch on the title screen and in the stand menu.*
+*A business simulator for 6–10-year-olds with 100 adventures in ten worlds, extra
+stands to open and a decision card most days. The game ships in Romanian by
+default, with a Română / English switch on the title screen and in the stand menu.*
 
 ## Cum se joacă / Playing it
 
@@ -17,26 +17,36 @@ Dublu-click pe **`index.html`**. Atât — fără instalare, fără server, făr
 Progresul se salvează automat. Închizi fila în mijlocul sezonului și te așteaptă
 un buton **Continuă** când te întorci.
 
-## Cele 24 de aventuri
+## Cele 100 de aventuri
 
 Fiecare aventură e un alt loc în care vinzi aceleași două produse, dar cu altă
 vreme, altă aglomerație, altă chirie, alte evenimente, alt decor animat și o
-**regulă specială** explicată într-o propoziție pe ecranul de start.
+**regulă specială** explicată într-o propoziție pe ecranul de start. Sunt
+împărțite în zece lumi, câte zece în fiecare:
 
-| Grupă | Aventuri |
+| Lume | Aventuri |
 |---|---|
-| ☀️ La soare | Colțul străzii · Plaja · Parcul mare · Piscina · Tabăra de vară (10 zile) · Satul bunicilor |
-| 🏙️ În oraș | Centrul orașului · Gara · Mall-ul · Cinema · Campus · Curtea școlii |
-| 🎉 Lume multă | Bâlciul (10 zile) · Stadionul · Festival (7 zile) · Zoo · Portul · Aeroportul |
-| ❄️ Frig și ploaie | Pârtia de schi · Patinoarul · Târgul de toamnă (12 zile) · Târgul de Crăciun (12 zile) · Muzeul · Popas la munte |
+| ☀️ La soare | Colțul străzii · Plaja · Parcul mare · Piscina · Tabăra de vară · Satul bunicilor · Parcul acvatic · Malul lacului · Livada · Floarea-soarelui |
+| 🏙️ În oraș | Centrul orașului · Gara · Mall-ul · Cinema · Campus · Curtea școlii · Centrul vechi · Metroul · Parcul de birouri · Biblioteca |
+| 🎉 Lume multă | Bâlciul · Stadionul · Festival · Portul · Aeroportul · Circul · Carnavalul · Revelionul · Piața centrală · Expoziția |
+| ❄️ Iarnă | Pârtia de schi · Patinoarul · Târgul de Crăciun · Cabana · Dealul cu sănii · Festivalul de gheață · Hochei · Snowpark · Satul lui Moș Crăciun · Băile termale |
+| 🌧️ Toamnă și ploaie | Târgul de toamnă · Muzeul · Popas la munte · Culesul viei · Halloween · Acvariul · Sera · Târgul de carte · Trenul cu aburi · Strada umbrelelor |
+| 🌍 În jurul lumii | Oaza din deșert · Jungla · Safari · Insula tropicală · Orașul de pe canale · Metropola de noapte · Piramidele · Fiordul · Bazarul · Pustiul australian |
+| 🐾 Natură | Zoo · Ferma · Poteca din pădure · Herghelia · Lacul păsărilor · Casa fluturilor · Parcul câinilor · Delfinariul · Peștera · Parcul cu dinozauri |
+| 🏅 Sport | Maratonul · Clubul de tenis · Skatepark · Bazinul olimpic · Turul ciclist · Sala de fitness · Terenul de baschet · Pista de karting · Terenul de golf · Sala de cățărat |
+| 🎭 Distracție | Parcul de distracții · Teatrul · Sala de jocuri · Convenția de benzi desenate · Festivalul baloanelor · Platoul de filmare · Teatrul de păpuși · Târgul de artă · Școala de muzică · Talciocul |
+| 🚀 Aventuri ciudate | Baza de pe Lună · Corabia piraților · Castelul · Farul · Vulcanul · Centrul spațial · Satul din copaci · Fabrica de roboți · Restaurantul subacvatic · Târgul vrăjitorilor |
 
 Câteva exemple de reguli speciale: pe plajă gheața se topește de trei ori mai
 repede; la stadion e meci la fiecare 3 zile și liniște în rest; la muzeu zilele
 ploioase sunt cele mai bune; la aeroport totul e scump — și ce vinzi, și chiria;
-la școală copiii vor prețuri mici și weekendul e închis; la festival mulțimea e
-uriașă, dar fără ajutoare coada explodează.
+în bazar toată lumea se tocmește; pe Lună nu se strică nimic, dar totul costă
+dublu; la fabrica de roboți servești mai repede — până cade curentul.
 
-Aventurile câștigate primesc un 🏆 pe hartă, iar recordul se ține minte.
+Ecranul de start are zece tab-uri (câte unul pe lume), un buton **Surpriză 🎲**
+care alege o aventură necâștigată și un contor „🏆 n din 100 câștigate”.
+Aventurile câștigate primesc un 🏆 pe hartă, recordul se ține minte, iar la
+final apare albumul cu toate cele 100.
 
 ## Ciclul unei zile
 
@@ -88,11 +98,13 @@ Cifrele *sunt* lecția, deci toate sunt reale și toate se văd:
 | Fondator | $150 | Clienții îți observă prețurile |
 | Magnat | $100 | Clienți foarte pretențioși — umfli prețul, pleacă |
 
-Ținta de bani depinde de aventură și se afișează pe ecranul de start (de la
-$370 în Tabăra de vară până la $780 la Muzeu, pe Magnat). Echilibrul, verificat
-cu o simulare automată pe toate cele 72 de combinații: Începător se câștigă
-jucând cu cap, fără să deschizi nimic; Fondator cere cel puțin o îmbunătățire
-sau un stand nou folosit bine; Magnat presupune că folosești toate pârghiile.
+Ținta de bani depinde de aventură și se afișează pe ecranul de start. E
+calibrată automat (`MODE_GOALS` în `game.js`, generat de un script care joacă
+fiecare aventură de 12 ori cu o strategie simplă): pe Fondator, un sezon jucat
+„cumpăr pentru o zi normală și spun nu la toate cartonașele” ajunge chiar sub
+țintă, iar unul în care deschizi standurile noi trece de ea. Verificat pe toate
+cele 300 de combinații aventură × dificultate: Începător se câștigă în toate
+jucând simplu; Magnat presupune că folosești toate pârghiile.
 
 ## Meniul standului (butonul ⋯)
 
@@ -112,9 +124,12 @@ game.js       simularea, economia, animația, graficele
 
 Fără dependențe, fără build. Economia stă în blocul de configurare din capul lui
 `game.js` — prețuri, rețete, îmbunătățiri, vreme și dificultate sunt date simple,
-sigur de modificat. Cele 24 de aventuri sunt lista `MODES` (fiecare număr e un
-multiplicator față de colțul străzii), cartonașele sunt `CARDS`, iar decorurile
-animate sunt `BACKDROPS`. Textele se schimbă doar în `i18n.js`.
+sigur de modificat. Cele 100 de aventuri sunt lista `MODES` (fiecare număr e un
+multiplicator față de colțul străzii), țintele lor sunt `MODE_GOALS`, cartonașele
+sunt `CARDS`, iar decorurile animate sunt `BACKDROPS` (primele 24 desenate de
+mână) și `SCENES` (restul, descrise ca date: culoarea solului, câteva piese de
+decor reutilizabile și emoji așezate pe scenă). Textele se schimbă doar în
+`i18n.js`.
 
 Pentru verificarea echilibrului, `game.js` expune `window.BOB` (motorul fără
 interfață), astfel încât un script Node poate juca sezoane întregi.

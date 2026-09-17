@@ -74,7 +74,11 @@ var WEATHER_POOLS = {
   mild:   ['warm','mild','mild','warm','cloudy','mild','warm','rainy','mild','warm','cloudy','mild','warm','rainy'],
   rainy:  ['mild','rainy','cloudy','warm','rainy','mild','cloudy','rainy','warm','mild','rainy','cloudy','mild','rainy'],
   autumn: ['mild','cloudy','chilly','mild','rainy','cloudy','chilly','mild','cloudy','rainy','chilly','mild','cloudy','chilly'],
-  winter: ['chilly','snowy','snowy','cloudy','chilly','snowy','chilly','snowy','cloudy','snowy','chilly','snowy','snowy','chilly']
+  winter: ['chilly','snowy','snowy','cloudy','chilly','snowy','chilly','snowy','cloudy','snowy','chilly','snowy','snowy','chilly'],
+  desert: ['hot','scorching','scorching','hot','scorching','hot','scorching','hot','scorching','warm','hot','scorching','hot','scorching'],
+  tropical: ['hot','hot','rainy','warm','hot','rainy','hot','warm','rainy','hot','hot','rainy','warm','hot'],
+  alpine: ['mild','chilly','mild','cloudy','chilly','mild','warm','chilly','cloudy','mild','chilly','mild','rainy','chilly'],
+  monsoon: ['cloudy','rainy','rainy','cloudy','mild','rainy','cloudy','rainy','rainy','mild','cloudy','rainy','cloudy','rainy']
 };
 
 var EVENTS = {
@@ -97,7 +101,21 @@ var EVENTS = {
   birthday: { emoji:'🎂', traffic:1.20, lem:1.30 },
   movie:    { emoji:'🎬', traffic:1.65 },
   race:     { emoji:'🏃', traffic:1.45, lem:1.40 },
-  storm:    { emoji:'⛈️', traffic:0.40 }
+  storm:    { emoji:'⛈️', traffic:0.40 },
+  show:     { emoji:'🎪', traffic:1.80 },
+  fireworks:{ emoji:'🎆', traffic:1.90, dog:1.20 },
+  wedding:  { emoji:'💒', traffic:1.50 },
+  harvest:  { emoji:'🍇', traffic:1.30, supplyOff:0.85 },
+  blackout: { emoji:'🔌', traffic:0.55 },
+  safari:   { emoji:'🚙', traffic:1.50 },
+  competition:{ emoji:'🏅', traffic:1.70 },
+  premiere: { emoji:'🎭', traffic:1.80 },
+  launch:   { emoji:'🚀', traffic:2.00 },
+  celebrity:{ emoji:'🌟', traffic:1.70 },
+  strike:   { emoji:'🚫', traffic:0.55 },
+  freeze:   { emoji:'🥶', traffic:0.60, dog:1.30 },
+  kite:     { emoji:'🪁', traffic:1.40, lem:1.20 },
+  spooky:   { emoji:'👻', traffic:1.90, dog:1.20 }
 };
 var BASE_EVENTS = ['parade','game','trip','market','truck','quiet','heat'];
 
@@ -113,10 +131,10 @@ var DOW_PROFILES = {
 var DIFFS = {
   easy:   { cash:200, profit:225, rent:10, sens:0.95 },
   normal: { cash:150, profit:325, rent:12, sens:1.15 },
-  hard:   { cash:100, profit:425, rent:12, sens:1.25 }
+  hard:   { cash:100, profit:390, rent:12, sens:1.25 }
 };
 
-/* ───────────────────────────── the 24 adventures ─────────────────────────────
+/* ───────────────────────────── the 100 adventures ────────────────────────────
    Every number is a multiplier on the classic street corner (mode 'street').
    traffic  — how many people walk past        rent    — × the difficulty rent
    lem/dog  — appetite for each product        supply  — × every pack price
@@ -138,99 +156,371 @@ var MODE_DEFAULTS = {
 
 var MODES = [
   /* ☀️ in the sun */
-  { id:'street',   emoji:'🏘️', group:'sun', stars:1, goal:1.25,
+  { id:'street',   emoji:'🏘️', group:'sun', stars:1,
     spots:[ spot('corner','🌳',45,12,0.55,3), spot('bus','🚌',65,16,0.70,6) ] },
   { id:'beach',    emoji:'🏖️', group:'sun', stars:1, backdrop:'beach', weather:'beach', traffic:1.25, rent:1.3,
-    lem:1.25, dog:0.85, lemFair:1.10, supply:1.1, spoil:{ ice:0.90 }, tags:['hot'], goal:1.2,
+    lem:1.25, dog:0.85, lemFair:1.10, supply:1.1, spoil:{ ice:0.90 }, tags:['hot'],
     events:['heat','tourists','storm','trip','quiet','truck'],
     spots:[ spot('lifeguard','🏊',60,16,0.60,3), spot('pier','🎣',80,20,0.75,6) ] },
-  { id:'park',     emoji:'🌳', group:'sun', stars:1, goal:1.2, backdrop:'park', dow:'strong', traffic:1.05, rent:0.9,
+  { id:'park',     emoji:'🌳', group:'sun', stars:1, backdrop:'park', dow:'strong', traffic:1.05, rent:0.9,
     tags:['hot','mascot'], events:['race','birthday','parade','quiet','truck','game'],
     spots:[ spot('playground','🤸',45,12,0.50,3), spot('lake','🦆',60,15,0.60,6) ] },
   { id:'pool',     emoji:'🏊', group:'sun', stars:1, backdrop:'pool', weather:'beach', traffic:0.95, rent:1.1,
-    lem:1.30, dog:0.80, sens:0.1, spoil:{ ice:0.80 }, tags:['hot'], goal:1.15,
+    lem:1.30, dog:0.80, sens:0.1, spoil:{ ice:0.80 }, tags:['hot'],
     events:['heat','birthday','trip','quiet','race'],
     spots:[ spot('slide','🌊',50,14,0.55,3), spot('kidspool','👶',45,12,0.50,6) ] },
   { id:'camp',     emoji:'🏕️', group:'sun', stars:1, backdrop:'forest', days:10, traffic:0.9, rent:0.5,
-    lem:1.2, dog:1.1, supply:1.2, goal:1.05, events:['trip','race','quiet','birthday','game'],
+    lem:1.2, dog:1.1, supply:1.2, events:['trip','race','quiet','birthday','game'],
     spots:[ spot('lake','🛶',40,10,0.55,3), spot('campfire','🔥',40,10,0.50,5) ] },
   { id:'village',  emoji:'🐄', group:'sun', stars:1, backdrop:'village', weather:'mild', traffic:0.7, rent:0.4,
-    lemFair:0.9, dogFair:0.9, supply:0.9, repMult:1.4, goal:0.8, events:['market','quiet','holiday','parade'],
+    lemFair:0.9, dogFair:0.9, supply:0.9, repMult:1.4, events:['market','quiet','holiday','parade'],
     spots:[ spot('church','⛪',35,8,0.60,3), spot('mill','🌾',30,8,0.50,6) ] },
+  { id:'waterpark', emoji:'🌊', group:'sun', stars:2, backdrop:'waterpark', weather:'beach', dow:'strong', traffic:1.3, rent:1.5,
+    lem:1.35, dog:0.9, lemFair:1.1, spoil:{ ice:0.85 }, tags:['hot','mascot'],
+    events:['heat','birthday','trip','storm','quiet','holiday'],
+    spots:[ spot('bigslide','🎢',65,18,0.65,3), spot('wavepool','🌊',60,16,0.60,6) ] },
+  { id:'lakeside', emoji:'🛶', group:'sun', stars:1, backdrop:'lakeside', dow:'strong', traffic:0.95, rent:0.7, lem:1.1,
+    events:['race','birthday','trip','quiet','storm','kite'],
+    spots:[ spot('dock','⛵',45,12,0.55,3), spot('picnic','🧺',40,10,0.50,6) ] },
+  { id:'orchard',  emoji:'🍎', group:'sun', stars:1, backdrop:'orchard', weather:'mild', traffic:0.8, rent:0.5,
+    supply:0.85, lemFair:0.95, dogFair:0.95, repMult:1.2, events:['market','harvest','trip','quiet','birthday'],
+    spots:[ spot('gate','🚜',35,9,0.55,3), spot('barn','🏚️',35,9,0.50,6) ] },
+  { id:'sunflower', emoji:'🌻', group:'sun', stars:2, backdrop:'sunflower', weather:'beach', traffic:0.85, rent:0.6,
+    lem:1.2, dog:0.9, spoil:{ ice:0.85 }, tags:['hot'], events:['tourists','heat','wedding','quiet','storm'],
+    spots:[ spot('photo','📸',40,10,0.60,3), spot('road','🚗',45,12,0.50,6) ] },
 
   /* 🏙️ in the city */
   { id:'downtown', emoji:'🏙️', group:'city', stars:2, backdrop:'city', dow:'weekday', traffic:1.2, rent:1.5,
-    dog:1.1, lemFair:1.1, dogFair:1.1, goal:1.35, events:['tourists','parade','market','truck','quiet'],
+    dog:1.1, lemFair:1.1, dogFair:1.1, events:['tourists','parade','market','truck','quiet'],
     spots:[ spot('office','🏢',75,22,0.75,3), spot('plaza','⛲',60,18,0.60,6) ] },
   { id:'station',  emoji:'🚉', group:'city', stars:2, backdrop:'station', dow:'flat', traffic:1.15, rent:1.2,
-    cap:0.85, tags:['travel'], goal:1.15, events:['delay','tourists','quiet','market','truck'],
+    cap:0.85, tags:['travel'], events:['delay','tourists','quiet','market','truck'],
     spots:[ spot('platform','🚆',60,18,0.70,3), spot('taxi','🚕',50,15,0.50,6) ] },
   { id:'mall',     emoji:'🛍️', group:'city', stars:1, backdrop:'mall', indoor:true, weather:'mild', traffic:1.05,
-    rent:2.0, lemFair:1.1, dogFair:1.1, tags:['discount'], goal:1.2,
+    rent:2.0, lemFair:1.1, dogFair:1.1, tags:['discount'],
     events:['sale','holiday','quiet','tourists','birthday'],
     spots:[ spot('foodcourt','🍽️',70,22,0.75,3), spot('entrance','🎟️',55,18,0.60,6) ] },
-  { id:'cinema',   emoji:'🎬', group:'city', stars:2, goal:1.15, backdrop:'cinema', indoor:true, night:true, weather:'rainy',
+  { id:'cinema',   emoji:'🎬', group:'city', stars:2, backdrop:'cinema', indoor:true, night:true, weather:'rainy',
     traffic:0.9, rent:1.3, dog:1.15, lem:0.9, every:{ n:4, id:'movie' },
     events:['holiday','quiet','sale','birthday'],
     spots:[ spot('lobby','🍿',55,16,0.60,3), spot('arcade','🕹️',50,14,0.50,6) ] },
-  { id:'campus',   emoji:'🎓', group:'city', stars:2, goal:1.05, backdrop:'campus', dow:'weekday', traffic:1.15, rent:0.9,
+  { id:'campus',   emoji:'🎓', group:'city', stars:2, backdrop:'campus', dow:'weekday', traffic:1.15, rent:0.9,
     sens:0.15, dog:1.15, lemFair:0.92, dogFair:0.92, events:['exam','concert','race','market','quiet'],
     spots:[ spot('library','📚',50,14,0.60,3), spot('dorms','🛏️',55,15,0.65,6) ] },
   { id:'school',   emoji:'🏫', group:'city', stars:1, backdrop:'school', weather:'mild', dow:'school', traffic:1.4,
-    rent:0.6, sens:0.2, lem:1.15, dog:0.9, lemFair:0.85, dogFair:0.85, goal:0.8,
+    rent:0.6, sens:0.2, lem:1.15, dog:0.9, lemFair:0.85, dogFair:0.85,
     events:['trip','exam','game','holiday','birthday'],
     spots:[ spot('gym','🏀',40,10,0.50,3), spot('library','📚',40,10,0.45,6) ] },
+  { id:'oldtown',  emoji:'🏰', group:'city', stars:2, backdrop:'oldtown', weather:'mild', traffic:1.1, rent:1.4,
+    lemFair:1.15, dogFair:1.15, tags:['travel'], events:['tourists','parade','market','holiday','quiet','wedding'],
+    spots:[ spot('square','⛲',65,18,0.70,3), spot('tower','🕰️',55,16,0.55,6) ] },
+  { id:'metro',    emoji:'🚇', group:'city', stars:2, backdrop:'metro', indoor:true, dow:'weekday', traffic:1.25, rent:1.3,
+    cap:0.8, tags:['travel'], events:['delay','strike','quiet','tourists','holiday'],
+    spots:[ spot('exit','🚶',60,18,0.70,3), spot('platform','🚆',55,16,0.55,6) ] },
+  { id:'office',   emoji:'🏢', group:'city', stars:2, backdrop:'office', dow:'weekday', traffic:1.2, rent:1.6,
+    lemFair:1.1, dogFair:1.2, events:['quiet','holiday','market','truck','celebrity'],
+    spots:[ spot('lobby','🛎️',70,20,0.75,3), spot('foodtrucks','🚚',60,18,0.60,6) ] },
+  { id:'library',  emoji:'📚', group:'city', stars:1, backdrop:'library', indoor:true, rainLove:true, weather:'rainy',
+    traffic:0.75, rent:0.8, sens:0.1, events:['trip','exam','quiet','holiday','celebrity'],
+    spots:[ spot('kids','🧸',40,10,0.55,3), spot('cafe','☕',45,12,0.50,6) ] },
 
   /* 🎉 big crowds */
   { id:'fair',     emoji:'🎪', group:'crowd', stars:2, backdrop:'fair', days:10, traffic:1.35, rent:2.0,
-    lemFair:1.25, dogFair:1.25, supply:1.15, tags:['discount','mascot'], goal:1.7,
+    lemFair:1.25, dogFair:1.25, supply:1.15, tags:['discount','mascot'],
     events:['parade','holiday','concert','quiet','truck'],
     spots:[ spot('wheel','🎡',80,24,0.70,3), spot('carousel','🎠',70,22,0.65,5) ] },
   { id:'stadium',  emoji:'🏟️', group:'crowd', stars:2, backdrop:'stadium', traffic:0.75, rent:1.4, dog:1.2,
-    dogFair:1.15, every:{ n:3, id:'match' }, tags:['mascot'], goal:1.2, events:['quiet','truck','tourists'],
+    dogFair:1.15, every:{ n:3, id:'match' }, tags:['mascot'], events:['quiet','truck','tourists'],
     spots:[ spot('gate','🚪',70,20,0.80,3), spot('parking','🅿️',60,18,0.60,6) ] },
   { id:'festival', emoji:'🎸', group:'crowd', stars:3, backdrop:'festival', night:true, days:7, traffic:1.9,
-    rent:1.8, lemFair:1.3, dogFair:1.3, supply:1.15, sens:-0.1, goal:1.7,
+    rent:1.8, lemFair:1.3, dogFair:1.3, supply:1.15, sens:-0.1,
     events:['concert','storm','heat','tourists'],
-    spots:[ spot('stage','🎤',90,30,0.90,2), spot('camping','⛺',70,24,0.60,4) ] },
-  { id:'zoo',      emoji:'🦁', group:'crowd', stars:1, goal:1.35, backdrop:'zoo', traffic:1.1, rent:1.1, lem:1.1,
-    repMult:1.3, tags:['mascot','hot'], events:['birthday','trip','tourists','quiet','holiday'],
-    spots:[ spot('monkeys','🐒',55,15,0.60,3), spot('penguins','🐧',55,15,0.55,6) ] },
+    spots:[ spot('stage','🎤',60,22,0.90,2), spot('camping','⛺',50,18,0.60,3) ] },
   { id:'harbor',   emoji:'⚓', group:'crowd', stars:2, backdrop:'harbor', weather:'beach', traffic:1.1, rent:1.2,
-    lem:1.05, dog:1.05, every:{ n:4, id:'cruise' }, tags:['hot'], goal:1.3,
+    lem:1.05, dog:1.05, every:{ n:4, id:'cruise' }, tags:['hot'],
     events:['storm','tourists','market','quiet'],
     spots:[ spot('ferry','🛳️',70,20,0.80,3), spot('fishmarket','🐟',50,15,0.50,6) ] },
   { id:'airport',  emoji:'✈️', group:'crowd', stars:3, backdrop:'airport', indoor:true, dow:'flat', traffic:1.1,
-    rent:2.4, lemFair:1.35, dogFair:1.35, supply:1.2, tags:['travel'], goal:1.45,
+    rent:2.4, lemFair:1.35, dogFair:1.35, supply:1.2, tags:['travel'],
     events:['delay','holiday','tourists','storm','quiet'],
     spots:[ spot('gate12','🛫',90,28,0.85,3), spot('arrivals','🧳',70,22,0.65,6) ] },
+  { id:'circus',   emoji:'🤹', group:'crowd', stars:2, backdrop:'circus', traffic:0.8, rent:1.3, every:{ n:2, id:'show' },
+    tags:['mascot'], events:['quiet','birthday','tourists'],
+    spots:[ spot('bigtop','🎪',65,18,0.75,3), spot('animals','🐘',55,16,0.55,6) ] },
+  { id:'carnival', emoji:'🎭', group:'crowd', stars:2, backdrop:'carnival', days:7, traffic:1.7, rent:1.8,
+    lemFair:1.2, dogFair:1.2, tags:['mascot','discount'], events:['parade','concert','fireworks','storm'],
+    spots:[ spot('paraderoute','🥁',75,22,0.80,2), spot('masks','🎭',60,18,0.55,4) ] },
+  { id:'newyear',  emoji:'🎆', group:'crowd', stars:3, backdrop:'newyear', night:true, days:7, weather:'winter',
+    traffic:1.5, rent:1.8, dog:1.3, lem:0.6, dogFair:1.2, supply:1.15, spoil:{ ice:0 }, every:{ n:7, id:'fireworks' },
+    tags:['snow'], events:['concert','holiday','storm','quiet','freeze'],
+    spots:[ spot('stage','🎤',80,24,0.80,2), spot('clock','🕛',70,20,0.65,4) ] },
+  { id:'market',   emoji:'🧺', group:'crowd', stars:1, backdrop:'marketplace', weather:'mild', dow:'strong', traffic:1.15, rent:0.9,
+    supply:0.85, lemFair:0.95, dogFair:0.95, tags:['discount'], events:['market','harvest','holiday','quiet','storm','parade'],
+    spots:[ spot('fishstall','🐟',45,12,0.55,3), spot('flowers','💐',45,12,0.50,6) ] },
+  { id:'expo',     emoji:'🏛️', group:'crowd', stars:2, backdrop:'expo', indoor:true, dow:'weekday', traffic:1.3, rent:1.7,
+    lemFair:1.25, dogFair:1.25, tags:['travel'], events:['celebrity','tourists','quiet','holiday','sale'],
+    spots:[ spot('hallA','🅰️',75,22,0.75,3), spot('entrance','🎟️',65,18,0.60,6) ] },
 
-  /* ❄️ cold & rainy */
-  { id:'ski',      emoji:'🎿', group:'cold', stars:2, goal:1.2, backdrop:'snow', weather:'winter', traffic:1.0, rent:1.2,
+  /* ❄️ winter */
+  { id:'ski',      emoji:'🎿', group:'winter', stars:2, backdrop:'snow', weather:'winter', traffic:1.0, rent:1.2,
     lem:0.6, dog:1.4, supply:1.15, spoil:{ ice:0 }, tags:['snow'], events:['snowday','holiday','quiet','storm'],
     spots:[ spot('lift','🚡',60,18,0.70,3), spot('lodge','🏠',55,16,0.60,6) ] },
-  { id:'rink',     emoji:'⛸️', group:'cold', stars:1, backdrop:'rink', indoor:true, weather:'winter', traffic:0.8,
-    rent:1.0, lem:0.7, dog:1.25, spoil:{ ice:0 }, tags:['snow'], goal:1.2,
+  { id:'rink',     emoji:'⛸️', group:'winter', stars:1, backdrop:'rink', indoor:true, weather:'winter', traffic:0.8,
+    rent:1.0, lem:0.7, dog:1.25, spoil:{ ice:0 }, tags:['snow'],
     events:['holiday','birthday','snowday','quiet'],
     spots:[ spot('rental','🥾',45,12,0.50,3), spot('bleachers','🪑',45,12,0.50,6) ] },
-  { id:'autumn',   emoji:'🎃', group:'cold', stars:2, goal:1.35, backdrop:'autumn', days:12, weather:'autumn', traffic:1.0,
+  { id:'xmas',     emoji:'🎄', group:'winter', stars:3, backdrop:'xmas', night:true, days:12, weather:'winter',
+    traffic:1.2, rent:2.4, dog:1.35, lem:0.55, lemFair:1.2, dogFair:1.2, supply:1.2, spoil:{ ice:0 },
+    tags:['snow'], events:['snowday','holiday','concert','storm','tourists'],
+    spots:[ spot('tree','🎄',80,24,0.80,3), spot('gifts','🎁',70,20,0.65,6) ] },
+  { id:'lodge',    emoji:'🏔️', group:'winter', stars:1, backdrop:'lodge', weather:'winter', traffic:0.85, rent:0.9,
+    dog:1.35, lem:0.5, spoil:{ ice:0 }, tags:['snow'], events:['snowday','holiday','storm','quiet','freeze'],
+    spots:[ spot('fireplace','🔥',45,12,0.60,3), spot('terrace','🪑',45,12,0.50,6) ] },
+  { id:'sledhill', emoji:'🛷', group:'winter', stars:1, backdrop:'sledhill', weather:'winter', dow:'strong', traffic:1.0, rent:0.6,
+    dog:1.3, lem:0.55, spoil:{ ice:0 }, tags:['snow'], events:['snowday','holiday','freeze','quiet','birthday'],
+    spots:[ spot('top','⛰️',40,10,0.55,3), spot('bottom','🛷',40,10,0.55,6) ] },
+  { id:'icefest',  emoji:'🧊', group:'winter', stars:2, backdrop:'icefest', night:true, weather:'winter', traffic:1.2, rent:1.5,
+    lemFair:1.15, dogFair:1.15, dog:1.2, lem:0.6, spoil:{ ice:0 }, tags:['snow'],
+    events:['tourists','holiday','storm','concert','freeze'],
+    spots:[ spot('castle','🏰',65,18,0.70,3), spot('lights','🏮',55,16,0.55,6) ] },
+  { id:'hockey',   emoji:'🏒', group:'winter', stars:2, backdrop:'hockey', indoor:true, weather:'winter', traffic:0.8, rent:1.2,
+    dog:1.25, lem:0.75, spoil:{ ice:0 }, every:{ n:3, id:'match' }, tags:['snow','mascot'], events:['quiet','birthday','holiday'],
+    spots:[ spot('stands','🪑',60,16,0.75,3), spot('lockers','🥅',50,14,0.50,6) ] },
+  { id:'snowpark', emoji:'🏂', group:'winter', stars:2, backdrop:'snowpark', weather:'winter', traffic:0.95, rent:1.1,
+    dog:1.2, lem:0.7, sens:0.1, lemFair:0.95, dogFair:0.95, spoil:{ ice:0 }, tags:['snow'],
+    events:['snowday','storm','holiday','concert','competition'],
+    spots:[ spot('halfpipe','🏂',55,15,0.65,3), spot('chairlift','🚡',55,15,0.60,6) ] },
+  { id:'santavillage', emoji:'🎅', group:'winter', stars:3, backdrop:'santavillage', weather:'winter', traffic:1.4, rent:2.0,
+    lemFair:1.3, dogFair:1.3, supply:1.25, dog:1.2, lem:0.7, spoil:{ ice:0 }, tags:['snow','mascot'],
+    events:['tourists','holiday','storm','snowday','freeze'],
+    spots:[ spot('workshop','🎁',80,24,0.80,3), spot('reindeer','🦌',70,20,0.65,6) ] },
+  { id:'thermal',  emoji:'♨️', group:'winter', stars:1, backdrop:'thermal', weather:'winter', traffic:0.9, rent:1.0,
+    lem:1.1, dog:1.0, spoil:{ ice:0.3 }, tags:['snow'], events:['holiday','snowday','quiet','tourists','freeze'],
+    spots:[ spot('bigpool','♨️',50,14,0.60,3), spot('sauna','🧖',45,12,0.50,6) ] },
+
+  /* 🌧️ autumn & rain */
+  { id:'autumn',   emoji:'🎃', group:'rain', stars:2, backdrop:'autumn', days:12, weather:'autumn', traffic:1.0,
     rent:1.0, dog:1.3, lem:0.75, events:['parade','market','holiday','quiet','birthday'],
     spots:[ spot('pumpkins','🎃',50,14,0.60,3), spot('hayride','🚜',45,12,0.50,6) ] },
-  { id:'xmas',     emoji:'🎄', group:'cold', stars:3, backdrop:'xmas', night:true, days:12, weather:'winter',
-    traffic:1.2, rent:2.4, dog:1.35, lem:0.55, lemFair:1.2, dogFair:1.2, supply:1.2, spoil:{ ice:0 },
-    tags:['snow'], goal:1.6, events:['snowday','holiday','concert','storm','tourists'],
-    spots:[ spot('tree','🎄',80,24,0.80,3), spot('gifts','🎁',70,20,0.65,6) ] },
-  { id:'museum',   emoji:'🏛️', group:'cold', stars:2, goal:1.6, backdrop:'museum', indoor:true, rainLove:true, weather:'rainy',
+  { id:'museum',   emoji:'🏛️', group:'rain', stars:2, backdrop:'museum', indoor:true, rainLove:true, weather:'rainy',
     traffic:0.8, rent:1.1, lemFair:1.15, dogFair:1.15, events:['tourists','trip','quiet','holiday'],
     spots:[ spot('garden','🌷',50,14,0.50,3), spot('dinos','🦕',60,16,0.60,6) ] },
-  { id:'highway',  emoji:'🛣️', group:'cold', stars:2, backdrop:'highway', weather:'autumn', dow:'flat', traffic:1.0,
-    rent:1.0, dog:1.2, tags:['travel'], goal:1.2, events:['delay','holiday','truck','quiet','tourists'],
-    spots:[ spot('gas','⛽',60,18,0.70,3), spot('picnic','🧺',45,12,0.45,6) ] }
+  { id:'highway',  emoji:'🛣️', group:'rain', stars:2, backdrop:'highway', weather:'autumn', dow:'flat', traffic:1.0,
+    rent:1.0, dog:1.2, tags:['travel'], events:['delay','holiday','truck','quiet','tourists'],
+    spots:[ spot('gas','⛽',60,18,0.70,3), spot('picnic','🧺',45,12,0.45,6) ] },
+  { id:'harvest',  emoji:'🍇', group:'rain', stars:1, backdrop:'harvest', weather:'autumn', traffic:0.9, rent:0.6,
+    supply:0.85, dog:1.15, events:['harvest','market','holiday','quiet','storm'],
+    spots:[ spot('press','🍇',40,10,0.60,3), spot('cellar','🛢️',40,10,0.50,6) ] },
+  { id:'halloween', emoji:'👻', group:'rain', stars:2, backdrop:'halloween', night:true, days:7, weather:'autumn', traffic:1.4, rent:1.0,
+    dog:1.2, lem:0.8, every:{ n:7, id:'spooky' }, tags:['mascot'], events:['parade','holiday','storm','quiet'],
+    spots:[ spot('hauntedhouse','🏚️',45,12,0.70,2), spot('pumpkinpatch','🎃',40,10,0.55,3) ] },
+  { id:'aquarium', emoji:'🐠', group:'rain', stars:1, backdrop:'aquarium', indoor:true, rainLove:true, weather:'rainy',
+    traffic:0.9, rent:1.2, events:['trip','tourists','quiet','holiday','birthday'],
+    spots:[ spot('sharks','🦈',55,15,0.65,3), spot('touchpool','🐚',45,12,0.50,6) ] },
+  { id:'greenhouse', emoji:'🌱', group:'rain', stars:1, backdrop:'greenhouse', indoor:true, weather:'rainy', traffic:0.7, rent:0.7,
+    lem:1.15, supply:0.9, repMult:1.2, spoil:{ buns:0.35 }, events:['trip','tourists','quiet','birthday','holiday'],
+    spots:[ spot('cactus','🌵',40,10,0.55,3), spot('butterflies','🦋',40,10,0.50,6) ] },
+  { id:'bookfair', emoji:'📖', group:'rain', stars:2, backdrop:'bookfair', indoor:true, days:10, weather:'rainy', traffic:1.2, rent:1.5,
+    sens:0.1, tags:['discount'], events:['celebrity','quiet','holiday','trip','sale'],
+    spots:[ spot('signing','✍️',60,16,0.70,3), spot('kidscorner','🧸',50,14,0.55,5) ] },
+  { id:'steamtrain', emoji:'🚂', group:'rain', stars:2, backdrop:'steamtrain', weather:'autumn', dow:'strong', traffic:1.0, rent:1.0,
+    dog:1.1, tags:['travel'], events:['tourists','delay','storm','holiday','quiet'],
+    spots:[ spot('platform','🚂',55,15,0.65,3), spot('museum','🛤️',50,14,0.50,6) ] },
+  { id:'umbrella', emoji:'☔', group:'rain', stars:2, backdrop:'umbrella', weather:'monsoon', rainLove:true, traffic:1.3, rent:1.1,
+    dog:1.1, lem:0.7, dogFair:1.1, events:['storm','market','parade','quiet','holiday'],
+    spots:[ spot('arcades','🏛️',55,15,0.65,3), spot('tram','🚋',50,14,0.55,6) ] },
+
+  /* 🌍 around the world */
+  { id:'desert',   emoji:'🏜️', group:'world', stars:2, backdrop:'desert', weather:'desert', traffic:0.8, rent:0.8,
+    lem:1.4, dog:0.7, lemFair:1.25, supply:1.3, spoil:{ ice:0.95 }, tags:['hot'], events:['heat','tourists','storm','quiet','trip'],
+    spots:[ spot('camels','🐪',50,14,0.60,3), spot('well','💧',45,12,0.55,6) ] },
+  { id:'jungle',   emoji:'🌴', group:'world', stars:2, backdrop:'jungle', weather:'tropical', traffic:0.85, rent:0.7,
+    lem:1.2, dog:0.9, lemFair:1.1, supply:1.2, spoil:{ lemons:0.25, buns:0.40 }, tags:['hot'], events:['storm','tourists','trip','quiet','heat'],
+    spots:[ spot('bridge','🌉',45,12,0.60,3), spot('waterfall','💦',45,12,0.55,6) ] },
+  { id:'safari',   emoji:'🦓', group:'world', stars:2, backdrop:'safari', weather:'desert', dow:'flat', traffic:0.9, rent:1.0,
+    lemFair:1.2, dogFair:1.2, tags:['hot','mascot'], events:['safari','tourists','heat','quiet','storm'],
+    spots:[ spot('lodge','🏕️',55,15,0.65,3), spot('waterhole','🦛',50,14,0.55,6) ] },
+  { id:'island',   emoji:'🏝️', group:'world', stars:1, backdrop:'island', weather:'tropical', traffic:0.9, rent:0.8,
+    lem:1.3, lemFair:1.15, dogFair:1.1, supply:1.3, every:{ n:4, id:'cruise' }, tags:['hot'], events:['storm','tourists','quiet','heat'],
+    spots:[ spot('jetty','⛵',50,14,0.65,3), spot('hammocks','🌴',40,10,0.50,6) ] },
+  { id:'venice',   emoji:'🚣', group:'world', stars:2, backdrop:'venice', weather:'mild', traffic:1.1, rent:1.5,
+    lemFair:1.2, dogFair:1.2, tags:['travel'], events:['tourists','parade','storm','holiday','wedding'],
+    spots:[ spot('bridge','🌉',65,18,0.70,3), spot('gondola','🚣',60,16,0.60,6) ] },
+  { id:'neoncity', emoji:'🌃', group:'world', stars:3, backdrop:'neoncity', night:true, weather:'mild', dow:'flat', traffic:1.4, rent:2.0,
+    lemFair:1.3, dogFair:1.3, sens:-0.05, supply:1.15, events:['concert','celebrity','tourists','sale','quiet'],
+    spots:[ spot('crossing','🚦',85,26,0.85,3), spot('arcade','🕹️',70,20,0.65,6) ] },
+  { id:'pyramids', emoji:'🐫', group:'world', stars:2, backdrop:'pyramids', weather:'desert', traffic:1.0, rent:1.1,
+    lem:1.3, dog:0.8, lemFair:1.2, spoil:{ ice:0.9 }, tags:['hot','travel'], events:['tourists','heat','storm','quiet','trip'],
+    spots:[ spot('sphinx','🗿',60,16,0.70,3), spot('buses','🚌',55,15,0.60,6) ] },
+  { id:'fjord',    emoji:'⛰️', group:'world', stars:1, backdrop:'fjord', weather:'alpine', traffic:0.8, rent:0.9,
+    dog:1.2, lem:0.8, every:{ n:5, id:'cruise' }, events:['tourists','storm','quiet','kite'],
+    spots:[ spot('ferry','⛴️',50,14,0.65,3), spot('viewpoint','🔭',45,12,0.50,6) ] },
+  { id:'bazaar',   emoji:'🕌', group:'world', stars:2, backdrop:'bazaar', weather:'desert', traffic:1.3, rent:1.0,
+    sens:0.25, lemFair:0.9, dogFair:0.9, supply:0.8, tags:['hot','discount'], events:['market','tourists','holiday','quiet','heat'],
+    spots:[ spot('spices','🌶️',50,14,0.65,3), spot('carpets','🧶',45,12,0.55,6) ] },
+  { id:'outback',  emoji:'🦘', group:'world', stars:2, backdrop:'outback', weather:'desert', dow:'flat', traffic:0.6, rent:0.4,
+    lem:1.2, dog:1.1, supply:1.25, repMult:1.5, tags:['hot','travel'], events:['heat','tourists','quiet','storm','delay'],
+    spots:[ spot('roadhouse','⛽',35,9,0.65,3), spot('kangaroo','🦘',35,9,0.55,6) ] },
+
+  /* 🐾 nature & animals */
+  { id:'zoo',      emoji:'🦁', group:'nature', stars:1, backdrop:'zoo', traffic:1.1, rent:1.1, lem:1.1,
+    repMult:1.3, tags:['mascot','hot'], events:['birthday','trip','tourists','quiet','holiday'],
+    spots:[ spot('monkeys','🐒',55,15,0.60,3), spot('penguins','🐧',55,15,0.55,6) ] },
+  { id:'farm',     emoji:'🚜', group:'nature', stars:1, backdrop:'farm', weather:'mild', traffic:0.8, rent:0.5,
+    supply:0.8, dog:1.1, tags:['mascot'], events:['market','harvest','trip','birthday','quiet'],
+    spots:[ spot('barn','🐄',35,9,0.55,3), spot('pettingzoo','🐐',40,10,0.55,6) ] },
+  { id:'forest',   emoji:'🌲', group:'nature', stars:1, backdrop:'forest', weather:'alpine', dow:'strong', traffic:0.75, rent:0.4,
+    dog:1.15, events:['race','trip','storm','quiet','holiday'],
+    spots:[ spot('trailhead','🥾',35,9,0.60,3), spot('hut','🏠',35,9,0.50,6) ] },
+  { id:'stables',  emoji:'🐴', group:'nature', stars:1, backdrop:'stables', weather:'mild', traffic:0.7, rent:0.7,
+    dog:1.1, repMult:1.3, events:['birthday','trip','holiday','quiet','competition'],
+    spots:[ spot('arena','🏇',40,10,0.60,3), spot('paddock','🐎',40,10,0.50,6) ] },
+  { id:'birdlake', emoji:'🦆', group:'nature', stars:1, backdrop:'birdlake', weather:'autumn', traffic:0.65, rent:0.4,
+    dog:1.1, repMult:1.2, events:['tourists','quiet','storm','trip'],
+    spots:[ spot('hide','🔭',30,8,0.60,3), spot('boats','🛶',30,8,0.50,6) ] },
+  { id:'butterfly', emoji:'🦋', group:'nature', stars:1, backdrop:'butterfly', indoor:true, weather:'rainy', traffic:0.8, rent:1.0,
+    lem:1.2, spoil:{ buns:0.35 }, events:['trip','birthday','tourists','quiet','holiday'],
+    spots:[ spot('garden','🌺',45,12,0.55,3), spot('cocoons','🐛',40,10,0.50,6) ] },
+  { id:'dogpark',  emoji:'🐕', group:'nature', stars:1, backdrop:'dogpark', dow:'strong', traffic:0.9, rent:0.6,
+    dog:1.2, events:['race','birthday','holiday','quiet','competition'],
+    spots:[ spot('agility','🏅',40,10,0.55,3), spot('fountain','💦',40,10,0.50,6) ] },
+  { id:'dolphins', emoji:'🐬', group:'nature', stars:2, backdrop:'dolphins', weather:'beach', traffic:0.8, rent:1.3,
+    lem:1.2, every:{ n:2, id:'show' }, tags:['hot','mascot'], events:['quiet','birthday','tourists'],
+    spots:[ spot('stands','🪑',60,16,0.70,3), spot('gift','🎁',50,14,0.55,6) ] },
+  { id:'cavepark', emoji:'🦇', group:'nature', stars:2, backdrop:'cavepark', indoor:true, weather:'alpine', traffic:0.7, rent:0.9,
+    dog:1.2, lem:0.8, spoil:{ ice:0.1 }, events:['tourists','trip','storm','quiet','holiday'],
+    spots:[ spot('entrance','🕯️',45,12,0.60,3), spot('lake','💧',45,12,0.55,6) ] },
+  { id:'dinopark', emoji:'🦕', group:'nature', stars:2, backdrop:'dinopark', dow:'strong', traffic:1.15, rent:1.3,
+    lemFair:1.15, dogFair:1.15, tags:['mascot'], events:['trip','birthday','tourists','holiday','quiet'],
+    spots:[ spot('trex','🦖',60,16,0.70,3), spot('digsite','⛏️',55,15,0.55,6) ] },
+
+  /* 🏅 sports */
+  { id:'marathon', emoji:'🏃', group:'sport', stars:2, backdrop:'marathon', traffic:0.9, rent:1.0,
+    lem:1.3, every:{ n:7, id:'race' }, events:['quiet','holiday','heat'],
+    spots:[ spot('finish','🏁',55,15,0.70,3), spot('km30','💧',45,12,0.60,6) ] },
+  { id:'tennis',   emoji:'🎾', group:'sport', stars:1, backdrop:'tennis', traffic:0.75, rent:1.2,
+    lemFair:1.25, dogFair:1.2, sens:-0.1, events:['celebrity','competition','quiet','holiday'],
+    spots:[ spot('centercourt','🏆',55,15,0.65,3), spot('clubhouse','🍹',50,14,0.55,6) ] },
+  { id:'skatepark', emoji:'🛹', group:'sport', stars:1, backdrop:'skatepark', dow:'strong', traffic:1.0, rent:0.6,
+    sens:0.2, lemFair:0.85, dogFair:0.85, tags:['discount'], events:['concert','competition','quiet','holiday','birthday'],
+    spots:[ spot('bowl','🛹',40,10,0.55,3), spot('rails','🎧',40,10,0.50,6) ] },
+  { id:'swimmeet', emoji:'🥇', group:'sport', stars:2, backdrop:'swimmeet', indoor:true, traffic:0.8, rent:1.1,
+    lem:1.2, dog:0.9, every:{ n:3, id:'competition' }, events:['quiet','birthday','holiday'],
+    spots:[ spot('stands','🪑',55,15,0.70,3), spot('warmup','🏊',45,12,0.55,6) ] },
+  { id:'cycling',  emoji:'🚴', group:'sport', stars:2, backdrop:'cycling', weather:'alpine', dow:'flat', traffic:0.85, rent:0.7,
+    lem:1.1, dog:1.1, every:{ n:4, id:'race' }, events:['quiet','tourists','storm'],
+    spots:[ spot('summit','⛰️',45,12,0.65,3), spot('village','🏘️',45,12,0.55,6) ] },
+  { id:'gym',      emoji:'🏋️', group:'sport', stars:1, backdrop:'gym', indoor:true, dow:'weekday', traffic:0.9, rent:1.1,
+    lem:1.2, dog:0.7, lemFair:1.1, events:['quiet','holiday','competition','celebrity'],
+    spots:[ spot('reception','🛎️',50,14,0.60,3), spot('classes','🧘',45,12,0.50,6) ] },
+  { id:'basketball', emoji:'🏀', group:'sport', stars:1, backdrop:'basketball', dow:'strong', traffic:1.0, rent:0.6,
+    sens:0.15, lemFair:0.9, dogFair:0.9, tags:['mascot'], events:['game','birthday','quiet','holiday','concert'],
+    spots:[ spot('bleachers','🪑',40,10,0.55,3), spot('court2','🏀',40,10,0.50,6) ] },
+  { id:'karting',  emoji:'🏎️', group:'sport', stars:2, backdrop:'karting', traffic:0.9, rent:1.3,
+    lemFair:1.15, dogFair:1.15, tags:['mascot'], events:['birthday','birthday','race','holiday','quiet'],
+    spots:[ spot('pitlane','🔧',55,15,0.65,3), spot('podium','🏆',50,14,0.55,6) ] },
+  { id:'golf',     emoji:'⛳', group:'sport', stars:1, backdrop:'golf', weather:'mild', dow:'strong', traffic:0.6, rent:1.0,
+    lemFair:1.35, dogFair:1.35, sens:-0.15, events:['competition','celebrity','quiet','storm'],
+    spots:[ spot('hole9','⛳',55,15,0.65,3), spot('clubhouse','🏌️',50,14,0.55,6) ] },
+  { id:'climbing', emoji:'🧗', group:'sport', stars:2, backdrop:'climbing', indoor:true, rainLove:true, weather:'rainy', traffic:0.8, rent:1.0,
+    lem:1.15, events:['competition','birthday','quiet','holiday'],
+    spots:[ spot('boulder','🧱',45,12,0.60,3), spot('kidswall','🧒',45,12,0.55,6) ] },
+
+  /* 🎭 fun & arts */
+  { id:'themepark', emoji:'🎢', group:'fun', stars:3, backdrop:'themepark', dow:'strong', traffic:1.5, rent:2.2,
+    lemFair:1.35, dogFair:1.35, supply:1.15, tags:['mascot','discount'], events:['holiday','tourists','storm','birthday','quiet'],
+    spots:[ spot('coaster','🎢',90,28,0.85,3), spot('parade','🎠',75,22,0.65,6) ] },
+  { id:'theater',  emoji:'🎭', group:'fun', stars:2, backdrop:'theater', indoor:true, night:true, weather:'rainy', traffic:0.8, rent:1.3,
+    lemFair:1.2, dogFair:1.2, every:{ n:5, id:'premiere' }, events:['quiet','holiday','celebrity'],
+    spots:[ spot('foyer','🥂',55,15,0.70,3), spot('stagedoor','🚪',50,14,0.50,6) ] },
+  { id:'arcade',   emoji:'🕹️', group:'fun', stars:1, backdrop:'arcade', indoor:true, rainLove:true, weather:'rainy', dow:'strong', traffic:1.0, rent:1.1,
+    sens:0.15, lemFair:0.9, dogFair:0.9, tags:['discount'], events:['birthday','holiday','quiet','sale'],
+    spots:[ spot('prizes','🧸',45,12,0.60,3), spot('dance','🕺',45,12,0.55,6) ] },
+  { id:'comiccon', emoji:'🦸', group:'fun', stars:2, backdrop:'comiccon', indoor:true, days:7, traffic:1.6, rent:1.9,
+    lemFair:1.25, dogFair:1.25, tags:['mascot','discount'], events:['celebrity','tourists','quiet','holiday'],
+    spots:[ spot('mainstage','🎤',75,22,0.80,2), spot('artists','🖌️',60,18,0.60,4) ] },
+  { id:'balloonfest', emoji:'🎈', group:'fun', stars:2, backdrop:'balloonfest', weather:'mild', days:7, traffic:1.3, rent:1.2,
+    lem:1.1, events:['storm','holiday','tourists','quiet','kite'],
+    spots:[ spot('launch','🎈',55,15,0.70,2), spot('hill','⛰️',45,12,0.55,4) ] },
+  { id:'filmset',  emoji:'🎥', group:'fun', stars:2, backdrop:'filmset', dow:'flat', traffic:0.7, rent:0.8,
+    lemFair:1.2, dogFair:1.2, events:['celebrity','quiet','delay','storm'],
+    spots:[ spot('catering','🍽️',45,12,0.65,3), spot('trailers','🚐',45,12,0.55,6) ] },
+  { id:'puppet',   emoji:'🧸', group:'fun', stars:1, backdrop:'puppet', indoor:true, weather:'mild', dow:'flat', traffic:1.0, rent:0.6,
+    sens:0.2, lemFair:0.85, dogFair:0.85, tags:['mascot'], events:['trip','birthday','holiday','quiet'],
+    spots:[ spot('lobby','🎟️',40,10,0.55,3), spot('garden','🌷',40,10,0.50,6) ] },
+  { id:'artfair',  emoji:'🎨', group:'fun', stars:2, backdrop:'artfair', weather:'mild', traffic:0.9, rent:1.2,
+    lemFair:1.3, dogFair:1.25, sens:-0.1, events:['tourists','celebrity','storm','quiet','sale'],
+    spots:[ spot('sculptures','🗿',55,15,0.60,3), spot('vip','🥂',50,14,0.55,6) ] },
+  { id:'musicschool', emoji:'🎻', group:'fun', stars:1, backdrop:'musicschool', indoor:true, dow:'weekday', traffic:0.85, rent:0.7,
+    sens:0.1, events:['concert','exam','birthday','quiet','holiday'],
+    spots:[ spot('hall','🎹',35,8,0.60,3), spot('practice','🎺',35,8,0.50,6) ] },
+  { id:'flea',     emoji:'🛒', group:'fun', stars:1, backdrop:'flea', weather:'mild', dow:'strong', traffic:1.2, rent:0.5,
+    sens:0.2, lemFair:0.85, dogFair:0.85, supply:0.85, tags:['discount'], events:['market','sale','storm','quiet','holiday'],
+    spots:[ spot('antiques','🕰️',40,10,0.60,3), spot('toys','🧸',40,10,0.55,6) ] },
+
+  /* 🚀 wild adventures */
+  { id:'moonbase', emoji:'🌕', group:'wild', stars:3, backdrop:'moonbase', indoor:true, weather:'mild', dow:'flat', traffic:0.8, rent:2.0,
+    lemFair:1.6, dogFair:1.6, supply:1.6, cap:0.8, spoil:{ ice:0, lemons:0, buns:0, sausages:0 },
+    events:['launch','blackout','quiet','tourists'],
+    spots:[ spot('airlock','🚪',70,14,0.75,3), spot('rover','🛸',60,12,0.65,6) ] },
+  { id:'pirateship', emoji:'🦜', group:'wild', stars:2, backdrop:'pirateship', weather:'beach', traffic:0.9, rent:1.0,
+    lem:1.1, dog:1.1, tags:['hot','mascot'], events:['storm','tourists','holiday','quiet','birthday'],
+    spots:[ spot('deck','🗡️',50,14,0.65,3), spot('treasure','💰',50,14,0.55,6) ] },
+  { id:'castle',   emoji:'🏯', group:'wild', stars:2, backdrop:'castle', weather:'mild', dow:'strong', traffic:1.0, rent:1.2,
+    lemFair:1.15, dogFair:1.15, tags:['travel'], events:['tourists','wedding','holiday','storm','quiet'],
+    spots:[ spot('drawbridge','🌉',55,15,0.65,3), spot('courtyard','🛡️',50,14,0.55,6) ] },
+  { id:'lighthouse', emoji:'🌅', group:'wild', stars:1, backdrop:'lighthouse', weather:'alpine', traffic:0.6, rent:0.5,
+    dog:1.1, repMult:1.3, events:['storm','tourists','quiet','kite'],
+    spots:[ spot('pier','🎣',30,7,0.60,3), spot('top','🔭',30,7,0.50,6) ] },
+  { id:'volcano',  emoji:'🌋', group:'wild', stars:2, backdrop:'volcano', weather:'desert', traffic:0.85, rent:1.0,
+    lem:1.35, dog:0.8, spoil:{ ice:0.9 }, tags:['hot'], events:['tourists','heat','storm','trip','quiet'],
+    spots:[ spot('crater','🌋',50,14,0.65,3), spot('lava','🔥',45,12,0.55,6) ] },
+  { id:'spacecenter', emoji:'🚀', group:'wild', stars:2, backdrop:'spacecenter', indoor:true, dow:'strong', traffic:1.0, rent:1.4,
+    lemFair:1.2, dogFair:1.2, every:{ n:5, id:'launch' }, events:['trip','tourists','quiet','holiday'],
+    spots:[ spot('rocketgarden','🚀',60,16,0.70,3), spot('simulator','🕹️',55,15,0.55,6) ] },
+  { id:'treehouse', emoji:'🏡', group:'wild', stars:1, backdrop:'treehouse', weather:'mild', dow:'strong', traffic:0.7, rent:0.5,
+    repMult:1.3, events:['trip','birthday','storm','quiet','holiday'],
+    spots:[ spot('zipline','🌉',35,9,0.60,3), spot('bigtree','🌳',35,9,0.55,6) ] },
+  { id:'robotfactory', emoji:'🤖', group:'wild', stars:2, backdrop:'robotfactory', indoor:true, dow:'weekday', traffic:0.9, rent:1.3,
+    cap:1.3, lemFair:1.1, dogFair:1.1, events:['trip','tourists','blackout','quiet','holiday'],
+    spots:[ spot('showroom','🤖',55,15,0.65,3), spot('assembly','🔧',50,14,0.55,6) ] },
+  { id:'underwater', emoji:'🐙', group:'wild', stars:3, backdrop:'underwater', indoor:true, weather:'beach', traffic:0.75, rent:1.8,
+    lemFair:1.4, dogFair:1.4, supply:1.4, cap:0.8, spoil:{ ice:0.2 }, tags:['travel'], events:['tourists','storm','quiet','celebrity'],
+    spots:[ spot('tunnel','🐠',70,18,0.75,3), spot('elevator','🔽',60,14,0.60,6) ] },
+  { id:'wizardfair', emoji:'🧙', group:'wild', stars:2, backdrop:'wizardfair', night:true, days:10, weather:'autumn', traffic:1.2, rent:1.3,
+    dog:1.15, lem:0.9, lemFair:1.1, dogFair:1.1, tags:['mascot'], events:['parade','holiday','storm','concert','celebrity'],
+    spots:[ spot('potions','🧪',55,15,0.65,3), spot('dragon','🐉',55,15,0.60,5) ] }
 ];
-var MODE_GROUPS = ['sun', 'city', 'crowd', 'cold'];
+var MODE_GROUPS = ['sun', 'city', 'crowd', 'winter', 'rain', 'world', 'nature', 'sport', 'fun', 'wild'];
+
+/* cash goal per adventure, as a multiplier on the difficulty's profit target.
+   Generated by the headless balance run (scratch/balance.js) so that a
+   plain "buy for a normal day, answer no to every card" season lands
+   just under the Founder goal and a stand-opening season lands over it. */
+var MODE_GOALS = {
+  street:1.30, beach:1.15, park:1.25, pool:1.15, camp:1.20, village:0.95,
+  waterpark:1.20, lakeside:1.20, orchard:1.20, sunflower:1.35, downtown:1.35, station:1.10,
+  mall:1.20, cinema:1.15, campus:1.00, school:0.85, oldtown:1.65, metro:0.80,
+  office:1.55, library:1.10, fair:1.55, stadium:1.20, festival:1.60, harbor:1.25,
+  airport:1.45, circus:0.95, carnival:1.95, newyear:1.85, market:1.15, expo:2.15,
+  ski:1.20, rink:1.25, xmas:1.75, lodge:1.25, sledhill:1.70, icefest:2.00,
+  hockey:1.35, snowpark:1.15, santavillage:2.25, thermal:1.00, autumn:1.35, museum:1.55,
+  highway:1.25, harvest:1.45, halloween:1.35, aquarium:1.20, greenhouse:1.15, bookfair:1.30,
+  steamtrain:0.95, umbrella:1.65, desert:1.45, jungle:0.85, safari:2.10, island:1.00,
+  venice:1.65, neoncity:1.85, pyramids:1.85, fjord:1.05, bazaar:1.45, outback:1.00,
+  zoo:1.35, farm:1.45, forest:1.10, stables:0.95, birdlake:0.75, butterfly:1.05,
+  dogpark:1.40, dolphins:1.05, cavepark:0.85, dinopark:1.55, marathon:1.15, tennis:1.55,
+  skatepark:0.90, swimmeet:1.05, cycling:1.20, gym:1.00, basketball:1.00, karting:1.45,
+  golf:1.05, climbing:1.15, themepark:1.70, theater:1.45, arcade:0.90, comiccon:2.35,
+  balloonfest:1.15, filmset:1.35, puppet:1.00, artfair:1.55, musicschool:1.05, flea:1.10,
+  moonbase:1.05, pirateship:1.25, castle:1.25, lighthouse:0.75, volcano:1.20, spacecenter:1.90,
+  treehouse:0.80, robotfactory:1.05, underwater:0.80, wizardfair:1.60
+};
+
 var MODES_BY_ID = {};
 MODES.forEach(function (m) {
   for (var k in MODE_DEFAULTS) if (m[k] === undefined) m[k] = MODE_DEFAULTS[k];
+  if (MODE_GOALS[m.id]) m.goal = MODE_GOALS[m.id];
   MODES_BY_ID[m.id] = m;
 });
 
@@ -249,7 +539,7 @@ var CARDS = {
   flyers:    { emoji:'📄', yes:{ cash:-8, traffic:1.20 } },
   cousin:    { emoji:'🧑‍🤝‍🧑', yes:{ cap:35, revShare:0.10 } },
   complaint: { emoji:'😠', yes:{ cash:-5, rep:2 }, no:{ rep:-4 } },
-  farmer:    { emoji:'🧑‍🌾', yes:{ supplyOff:{ lemons:0.5 } } },
+  farmer:    { emoji:'🌾', yes:{ supplyOff:{ lemons:0.5 } } },
   butcher:   { emoji:'🥩', yes:{ supplyOff:{ sausages:0.7 } } },
   balloon:   { emoji:'🎈', yes:{ cash:-15, traffic:1.30 } },
   musician:  { emoji:'🎻', yes:{ cash:-10, traffic:1.15, rep:3 } },
@@ -754,34 +1044,63 @@ function recordProgress(modeId, won, cash) {
 var chosenDiff = 'easy';
 var chosenMode = 'street';
 
+var WORLD_KEY = 'bossOfTheBlock.world';
+var chosenWorld = (function () {
+  try { var w = localStorage.getItem(WORLD_KEY); if (w && MODE_GROUPS.indexOf(w) !== -1) return w; } catch (e) {}
+  return MODE_GROUPS[0];
+})();
+
 function buildModeMap() {
-  var wrap = $('#modeGroups');
-  wrap.innerHTML = '';
   var prog = loadProgress();
+  var wonCount = MODES.filter(function (x) { return prog[x.id] && prog[x.id].won; }).length;
+  $('#modeCount').textContent = t('start.wonCount', { n: wonCount, total: MODES.length });
+
+  var tabs = $('#worldTabs');
+  tabs.innerHTML = '';
   MODE_GROUPS.forEach(function (g) {
-    var box = document.createElement('div');
-    box.className = 'mode-group';
-    box.innerHTML = '<div class="mg-title">' + t('group.' + g) + '</div><div class="mode-grid"></div>';
-    var grid = $('.mode-grid', box);
-    MODES.filter(function (m) { return m.group === g; }).forEach(function (m) {
-      var b = document.createElement('button');
-      b.className = 'mode-tile' + (m.id === chosenMode ? ' is-on' : '');
-      b.dataset.mode = m.id;
-      b.setAttribute('aria-pressed', m.id === chosenMode ? 'true' : 'false');
-      b.innerHTML = '<span class="mt-emoji">' + m.emoji + '</span>' +
-                    '<span class="mt-name">' + t('mode.' + m.id + '.name') + '</span>' +
-                    '<span class="mt-stars">' + stars(m.stars) + '</span>' +
-                    (prog[m.id] && prog[m.id].won ? '<span class="mt-won">🏆</span>' : '');
-      b.addEventListener('click', function () { chooseMode(m.id); });
-      grid.appendChild(b);
-    });
-    wrap.appendChild(box);
+    var b = document.createElement('button');
+    b.className = 'world-tab' + (g === chosenWorld ? ' is-on' : '');
+    b.dataset.world = g;
+    var won = MODES.filter(function (x) { return x.group === g && prog[x.id] && prog[x.id].won; }).length;
+    b.innerHTML = '<span class="wt-emoji">' + t('group.' + g + '.emoji') + '</span>' +
+                  '<span class="wt-name">' + t('group.' + g) + '</span>' +
+                  (won ? '<span class="wt-won">' + won + '/10</span>' : '');
+    b.addEventListener('click', function () { chooseWorld(g); });
+    tabs.appendChild(b);
   });
+  renderWorldTiles();
   renderModePick();
+}
+
+function chooseWorld(g) {
+  chosenWorld = g;
+  try { localStorage.setItem(WORLD_KEY, g); } catch (e) {}
+  $$('.world-tab').forEach(function (b) { b.classList.toggle('is-on', b.dataset.world === g); });
+  renderWorldTiles();
+}
+
+function renderWorldTiles() {
+  var grid = $('#modeGrid');
+  var prog = loadProgress();
+  grid.innerHTML = '';
+  MODES.filter(function (m) { return m.group === chosenWorld; }).forEach(function (m) {
+    var b = document.createElement('button');
+    b.className = 'mode-tile' + (m.id === chosenMode ? ' is-on' : '');
+    b.dataset.mode = m.id;
+    b.setAttribute('aria-pressed', m.id === chosenMode ? 'true' : 'false');
+    b.innerHTML = '<span class="mt-emoji">' + m.emoji + '</span>' +
+                  '<span class="mt-name">' + t('mode.' + m.id + '.name') + '</span>' +
+                  '<span class="mt-stars">' + stars(m.stars) + '</span>' +
+                  (prog[m.id] && prog[m.id].won ? '<span class="mt-won">🏆</span>' : '');
+    b.addEventListener('click', function () { chooseMode(m.id); });
+    grid.appendChild(b);
+  });
 }
 
 function chooseMode(id) {
   chosenMode = id;
+  var m = MODES_BY_ID[id];
+  if (m.group !== chosenWorld) chooseWorld(m.group);
   $$('.mode-tile').forEach(function (b) {
     var on = b.dataset.mode === id;
     b.classList.toggle('is-on', on);
@@ -790,10 +1109,22 @@ function chooseMode(id) {
   renderModePick();
 }
 
+/* the dice: any adventure not yet won, or any at all once they are all done */
+function randomMode() {
+  var prog = loadProgress();
+  var pool = MODES.filter(function (m) { return !(prog[m.id] && prog[m.id].won) && m.id !== chosenMode; });
+  if (!pool.length) pool = MODES.filter(function (m) { return m.id !== chosenMode; });
+  chooseMode(pool[Math.floor(Math.random() * pool.length)].id);
+  $('#modePick').classList.remove('mp-flash');
+  void $('#modePick').offsetWidth;
+  $('#modePick').classList.add('mp-flash');
+}
+
 function renderModePick() {
   var m = MODES_BY_ID[chosenMode];
   var prog = loadProgress()[m.id];
   var chips = [
+    '<span class="mp-chip">' + t('group.' + m.group + '.emoji') + ' ' + t('group.' + m.group) + '</span>',
     '<span class="mp-chip">📅 ' + nDe(m.days, t('unit.days')) + '</span>',
     '<span class="mp-chip">' + stars(m.stars) + ' ' + t('stars.' + m.stars) + '</span>',
     '<span class="mp-chip">🏪 ' + t('mp.spots', { n: m.spots.length }) + '</span>'
@@ -839,6 +1170,7 @@ function initStart() {
     b.addEventListener('click', function () { switchLang(b.dataset.lang); });
   });
 
+  $('#btnRandom').addEventListener('click', randomMode);
   $('#btnHowStart').addEventListener('click', openHow);
   $('#btnHow').addEventListener('click', openHow);
   $('#howClose').addEventListener('click', closeHow);
@@ -1632,6 +1964,164 @@ var BACKDROPS = {
            prop('🚗', 90, 300, 40) + prop('🚚', 820, 300, 46) + prop('⛽', 700, 300, 40); } }
 };
 
+/* ───── data-driven scenery for the newer adventures ─────
+   { ground:[top,bottom], wall:[top,bottom] (indoor / night sky), base:[...], props:[[emoji,x,y,size,opacity],...] }
+   bases are reusable set pieces; props are emoji placed on the 900×420 stage (ground line is y=300). */
+var GROUNDS = {
+  grass:['#96D67F','#6FBF5C'], sand:['#F6E2A8','#E9CC7A'], desert:['#F1CF86','#DDB35C'], snow:['#FFFFFF','#DCE9F4'],
+  paving:['#C9CBD1','#A9ADB6'], floor:['#F3E9DD','#E2D5C4'], coolfloor:['#DDE3EA','#C4CCD6'], autumn:['#D9B36A','#B98F45'],
+  jungle:['#6FB35B','#4A8A3C'], dark:['#5A3A6E','#3E2850'], ice:['#EAF6FF','#CFE6F7'], deck:['#C9A46B','#A98650'],
+  rock:['#8E9399','#6B7076'], moon:['#C8C8CF','#9A9AA3'], carpet:['#7A2E3A','#5A1F29'], clay:['#D9855A','#B8683F'],
+  lava:['#5B4A45','#3D2F2B'], gravel:['#D6CDBB','#B9AE9A'], meadow:['#B7DC7A','#8FC45A'], mud:['#A88A5C','#8A6E44']
+};
+var WALLS = {
+  night:['#1E2A4A','#3C4E7A'], deepnight:['#2A1C4E','#5B3E8E'], warm:['#FBF3E6','#F1E3D0'], cool:['#EEF3F8','#DCE5EE'],
+  dark:['#2B2140','#4A3560'], cave:['#3B3230','#5A4B46'], space:['#0B1026','#1E2A4A'], sea:['#0B3D6E','#1C6AA8'],
+  glass:['#DFF3E4','#C5E8CF'], concrete:['#D9DCE1','#C3C8CF'], red:['#5A1F29','#8A3340']
+};
+
+function sceneBase(kind) {
+  switch (kind) {
+    case 'houses': return houses();
+    case 'trees': return tree(90, 300, 1.1) + tree(210, 300, 0.85) + tree(690, 300, 1) + tree(810, 300, 1.15);
+    case 'autumntrees': return tree(90, 300, 1.1, '#E58A2A') + tree(210, 300, 0.85, '#C9522B') + tree(700, 300, 1, '#F2B134');
+    case 'pines': return pine(70, 300, 1.1) + pine(170, 300, 0.8) + pine(730, 300, 0.9) + pine(830, 300, 1.2);
+    case 'snowpines': return pine(80, 300, 1.1, true) + pine(180, 300, 0.8, true) + pine(760, 300, 1, true) + pine(850, 300, 0.85, true);
+    case 'city': return building(20, 90, 220, '#8E9BB0') + building(130, 70, 160, '#A7B2C4') + building(650, 80, 190, '#9AA6BA') + building(760, 110, 240, '#8090A8');
+    case 'skyline': return building(0, 60, 150, '#6E7A92') + building(70, 50, 110, '#7F8BA3') + building(130, 80, 200, '#5F6B84') + building(220, 60, 130, '#7F8BA3') +
+                           building(620, 70, 170, '#6E7A92') + building(700, 90, 230, '#5F6B84') + building(800, 60, 140, '#7F8BA3') + building(860, 40, 110, '#6E7A92');
+    case 'water': return '<rect x="0" y="236" width="900" height="70" fill="#4FB3E8"/><path d="M0 240 Q60 228 120 240 T240 240 T360 240 T480 240 T600 240 T720 240 T840 240 T960 240 V306 H0Z" fill="#7CCBF0"/>';
+    case 'lake': return '<ellipse cx="450" cy="300" rx="420" ry="40" fill="#5BB8E8"/><ellipse cx="450" cy="296" rx="380" ry="28" fill="#8AD1F2" opacity=".7"/>';
+    case 'stars': return '<g fill="#fff"><circle cx="80" cy="50" r="2"/><circle cx="200" cy="90" r="1.6"/><circle cx="330" cy="40" r="2.2"/><circle cx="520" cy="70" r="1.8"/><circle cx="700" cy="36" r="2.4"/><circle cx="820" cy="96" r="1.6"/><circle cx="430" cy="120" r="1.4"/><circle cx="610" cy="130" r="1.6"/></g>';
+    case 'hills': return prop('🏔️', 120, 250, 110, 0.85) + prop('🏔️', 760, 250, 130, 0.85);
+    case 'greenhills': return '<ellipse cx="120" cy="300" rx="280" ry="90" fill="#7FBF63"/><ellipse cx="780" cy="300" rx="320" ry="110" fill="#6FB257"/>';
+    case 'dunes': return '<ellipse cx="150" cy="300" rx="280" ry="70" fill="#EBCB8B"/><ellipse cx="760" cy="300" rx="320" ry="90" fill="#E3BD74"/>';
+    case 'stands': { var out = ''; for (var r = 0; r < 5; r++) out += '<rect x="0" y="' + (210 + r * 18) + '" width="900" height="16" fill="' + (r % 2 ? '#C8D3E0' : '#B0BFD0') + '"/>'; return out + '<rect x="0" y="210" width="900" height="6" fill="#7F8EA3"/>'; }
+    case 'bunting': return bunting();
+    case 'fence': return '<g stroke="#8B5A2B" stroke-width="5" fill="none"><line x1="0" y1="250" x2="330" y2="250"/><line x1="0" y1="280" x2="330" y2="280"/><line x1="40" y1="230" x2="40" y2="302"/><line x1="120" y1="230" x2="120" y2="302"/><line x1="200" y1="230" x2="200" y2="302"/><line x1="280" y1="230" x2="280" y2="302"/></g>';
+    case 'longfence': return '<g stroke="#9A6A3A" stroke-width="4"><line x1="0" y1="266" x2="900" y2="266"/><line x1="0" y1="284" x2="900" y2="284"/><line x1="60" y1="250" x2="60" y2="302"/><line x1="180" y1="250" x2="180" y2="302"/><line x1="720" y1="250" x2="720" y2="302"/><line x1="840" y1="250" x2="840" y2="302"/></g>';
+    case 'tents': return prop('⛺', 110, 300, 60) + prop('⛺', 210, 300, 46) + prop('⛺', 760, 300, 52);
+    case 'shelves': return '<rect x="0" y="120" width="900" height="6" fill="#D9CDB6"/><g fill="#E4DBC6"><rect x="60" y="130" width="26" height="170"/><rect x="180" y="130" width="26" height="170"/><rect x="700" y="130" width="26" height="170"/><rect x="820" y="130" width="26" height="170"/></g>';
+    case 'windows': return '<rect x="0" y="80" width="900" height="130" fill="#BFE0F7"/><g stroke="#9DB2C6" stroke-width="4"><line x1="150" y1="80" x2="150" y2="210"/><line x1="300" y1="80" x2="300" y2="210"/><line x1="600" y1="80" x2="600" y2="210"/><line x1="750" y1="80" x2="750" y2="210"/></g><rect x="0" y="210" width="900" height="6" fill="#9DB2C6"/>';
+    case 'stage': return '<rect x="560" y="170" width="320" height="132" rx="10" fill="#4A3570"/><rect x="580" y="150" width="280" height="30" rx="8" fill="#6B4FB0"/><g fill="#FFC93C" opacity=".9"><circle cx="600" cy="165" r="6"/><circle cx="660" cy="165" r="6"/><circle cx="720" cy="165" r="6"/><circle cx="780" cy="165" r="6"/><circle cx="840" cy="165" r="6"/></g>';
+    case 'lights': return '<path d="M0 100 Q450 40 900 100" stroke="#FFD75E" stroke-width="2" fill="none"/><g fill="#FFD75E"><circle cx="100" cy="88" r="4"/><circle cx="250" cy="72" r="4"/><circle cx="400" cy="62" r="4"/><circle cx="550" cy="62" r="4"/><circle cx="700" cy="72" r="4"/><circle cx="850" cy="90" r="4"/></g>';
+    case 'rails': return '<rect x="0" y="286" width="900" height="16" fill="#E9E5DC"/><rect x="0" y="200" width="900" height="16" fill="#8D97A5"/><rect x="0" y="216" width="900" height="6" fill="#6C7683"/>';
+    case 'road': return '<rect x="0" y="300" width="900" height="120" fill="#5E646B"/><line x1="0" y1="360" x2="900" y2="360" stroke="#FFD75E" stroke-width="4" stroke-dasharray="40 30"/>';
+    case 'pool': return '<rect x="0" y="246" width="900" height="60" fill="#5BC0EB"/><rect x="0" y="246" width="900" height="8" fill="#9EDCF7"/>';
+    case 'icefloor': return '<rect x="0" y="200" width="900" height="100" fill="#F4FBFF"/><rect x="0" y="196" width="900" height="8" fill="#B8CCE0"/>';
+    case 'bubbles': return '<g fill="#fff" opacity=".35"><circle cx="120" cy="80" r="6"/><circle cx="160" cy="140" r="4"/><circle cx="700" cy="60" r="7"/><circle cx="760" cy="150" r="5"/><circle cx="450" cy="40" r="4"/><circle cx="820" cy="220" r="6"/></g>';
+    case 'pillars': return '<g fill="#E9DFCB"><rect x="70" y="120" width="30" height="180"/><rect x="200" y="120" width="30" height="180"/><rect x="670" y="120" width="30" height="180"/><rect x="800" y="120" width="30" height="180"/></g><rect x="40" y="104" width="820" height="18" fill="#D9CDB6"/>';
+    case 'wall': return '<rect x="0" y="180" width="900" height="122" fill="#A89478"/><g fill="#8E7B62"><rect x="0" y="196" width="900" height="4"/><rect x="0" y="230" width="900" height="4"/><rect x="0" y="264" width="900" height="4"/></g>';
+    case 'court': return '<rect x="0" y="300" width="900" height="120" fill="#D9855A"/><g stroke="#fff" stroke-width="4" fill="none" opacity=".8"><line x1="0" y1="340" x2="900" y2="340"/><rect x="330" y="308" width="240" height="60" rx="30"/></g>';
+    case 'track': return '<rect x="0" y="300" width="900" height="120" fill="#C9553C"/><g stroke="#fff" stroke-width="3" opacity=".7"><line x1="0" y1="330" x2="900" y2="330"/><line x1="0" y1="360" x2="900" y2="360"/><line x1="0" y1="390" x2="900" y2="390"/></g>';
+    case 'stall': return '<rect x="30" y="200" width="200" height="100" rx="8" fill="#E9D8B4"/><path d="M20 200 L40 160 H220 L240 200Z" fill="#4A9BE8"/><rect x="670" y="200" width="200" height="100" rx="8" fill="#E9D8B4"/><path d="M660 200 L680 160 H860 L880 200Z" fill="#2F9E44"/>';
+    case 'balloons': return prop('🎈', 120, 170, 70) + prop('🎈', 300, 130, 50) + prop('🎈', 680, 150, 60) + prop('🎈', 820, 190, 44);
+    default: return '';
+  }
+}
+
+function scene(spec) {
+  return {
+    ground: GROUNDS[spec.ground] || spec.ground,
+    wall: spec.wall ? (WALLS[spec.wall] || spec.wall) : undefined,
+    draw: function () {
+      var out = spec.wall ? '<rect x="0" y="0" width="900" height="300" fill="' + (WALLS[spec.wall] || spec.wall)[0] + '"/>' : '';
+      (spec.base || []).forEach(function (b) { out += sceneBase(b); });
+      (spec.props || []).forEach(function (p) { out += prop(p[0], p[1], p[2], p[3], p[4]); });
+      return out;
+    }
+  };
+}
+
+var SCENES = {
+  /* sun */
+  waterpark:  { ground:'paving', base:['pool'], props:[['🎢',110,250,90],['🌊',760,262,60],['🏐',840,300,30],['🌴',300,300,60]] },
+  lakeside:   { ground:'grass', base:['lake'], props:[['⛵',150,262,54],['🦆',720,272,34],['🧺',830,300,36],['🌳',60,300,60]] },
+  orchard:    { ground:'meadow', props:[['🌳',80,300,84],['🍎',80,228,26],['🌳',200,300,70],['🍎',200,238,22],['🌳',720,300,80],['🍎',720,232,26],['🌳',840,300,66],['🧺',300,300,30]] },
+  sunflower:  { ground:'meadow', props:[['🌻',60,300,60],['🌻',130,290,48],['🌻',200,300,56],['🌻',260,292,40],['🌻',680,300,58],['🌻',750,290,46],['🌻',820,300,60],['🌻',870,292,42],['📸',560,300,34]] },
+  /* city */
+  oldtown:    { ground:'gravel', base:['houses'], props:[['⛲',150,300,60],['🕰️',760,220,54],['🏰',820,300,70]] },
+  metro:      { ground:'coolfloor', wall:'concrete', base:['rails'], props:[['🚇',180,280,70],['🚶',760,300,40],['🎫',840,300,30]] },
+  office:     { ground:'paving', base:['skyline'], props:[['🏢',120,300,80],['🚚',760,300,50],['💼',850,300,30]] },
+  library:    { ground:'floor', wall:'warm', base:['shelves'], props:[['📚',130,250,54],['📚',770,250,54],['🧸',300,300,34],['☕',600,300,30]] },
+  /* crowds */
+  circus:     { ground:'grass', base:['bunting'], props:[['🎪',140,300,140],['🐘',740,300,70],['🤹',840,300,44],['🎈',300,240,34]] },
+  carnival:   { ground:'paving', base:['bunting','houses'], props:[['🎭',110,300,64],['🥁',210,300,44],['🎉',720,300,54],['🎺',820,300,44]] },
+  newyear:    { ground:'snow', wall:'night', base:['stars','skyline'], props:[['🎆',150,160,80],['🎆',720,140,70],['🕛',820,300,60],['🎉',120,300,44]] },
+  marketplace:{ ground:'gravel', base:['stall'], props:[['🍎',130,270,34],['🥕',770,270,34],['🐟',280,300,34],['💐',620,300,34]] },
+  expo:       { ground:'coolfloor', wall:'cool', base:['windows'], props:[['🏛️',130,300,60],['🎟️',770,300,44],['🅰️',280,250,36],['🧳',620,300,34]] },
+  /* winter */
+  lodge:      { ground:'snow', base:['snowpines','hills'], props:[['🏠',740,300,90],['🔥',680,300,30],['🪑',830,300,30]] },
+  sledhill:   { ground:'snow', props:[['⛰️',760,270,120,0.8],['🛷',120,300,50],['🛷',220,280,36],['⛄',820,300,50],['🌲',60,300,60]] },
+  icefest:    { ground:'ice', wall:'night', base:['stars','lights'], props:[['🏰',140,300,110],['🧊',300,300,40],['🏮',700,240,40],['🏮',820,240,40],['🧊',760,300,48]] },
+  hockey:     { ground:'ice', wall:'cool', base:['icefloor'], props:[['🏒',130,292,50],['🥅',770,292,50],['🪑',280,250,30],['🪑',620,250,30]] },
+  snowpark:   { ground:'snow', base:['hills'], props:[['🏂',150,300,60],['🚡',700,150,44],['🏂',780,300,44],['🌲',850,300,50]] },
+  santavillage:{ ground:'snow', wall:'night', base:['stars','lights','snowpines'], props:[['🎅',140,300,70],['🎁',240,300,36],['🦌',740,300,60],['🎄',840,300,64]] },
+  thermal:    { ground:'snow', base:['pool'], props:[['♨️',150,262,60],['♨️',740,262,50],['🧖',840,300,44],['🌲',60,300,50]] },
+  /* rain */
+  harvest:    { ground:'autumn', base:['longfence'], props:[['🍇',120,300,50],['🍇',220,300,44],['🛢️',720,300,50],['🚜',830,300,54]] },
+  halloween:  { ground:'autumn', wall:'deepnight', base:['stars'], props:[['🏚️',140,300,110],['🎃',260,300,44],['👻',720,230,54],['🎃',780,300,50],['🦇',600,140,30],['🦇',820,110,26]] },
+  aquarium:   { ground:'coolfloor', wall:'sea', base:['bubbles'], props:[['🦈',150,150,80],['🐠',300,90,44],['🐙',740,140,64],['🐚',830,300,34],['🐠',620,70,36]] },
+  greenhouse: { ground:'floor', wall:'glass', base:['windows'], props:[['🌵',130,300,60],['🌿',250,300,50],['🌺',740,300,54],['🦋',680,200,36],['🌱',840,300,40]] },
+  bookfair:   { ground:'floor', wall:'warm', base:['shelves'], props:[['📖',130,250,54],['📚',770,250,54],['✍️',300,300,34],['🧸',620,300,30]] },
+  steamtrain: { ground:'autumn', base:['rails','autumntrees'], props:[['🚂',200,282,90],['🛤️',780,300,40]] },
+  umbrella:   { ground:'paving', base:['houses'], props:[['☔',130,200,60],['☔',240,170,48],['☔',700,190,56],['☔',820,160,44],['🚋',780,300,60]] },
+  /* world */
+  desert:     { ground:'desert', base:['dunes'], props:[['🌴',120,300,80],['🐪',740,300,64],['🌵',830,300,50],['💧',300,300,26]] },
+  jungle:     { ground:'jungle', base:['trees'], props:[['🌴',150,300,90],['🐒',150,220,34],['🌴',760,300,84],['🦜',760,230,32],['💦',300,300,40]] },
+  safari:     { ground:'desert', props:[['🌳',120,300,80],['🦓',240,300,50],['🦒',720,300,80],['🚙',830,300,50],['🦛',600,300,40]] },
+  island:     { ground:'sand', base:['water'], props:[['🌴',80,300,96],['🌴',820,300,90],['⛵',700,258,44],['🐚',300,300,26]] },
+  venice:     { ground:'deck', base:['water','houses'], props:[['🚣',200,266,60],['🌉',720,240,80],['🕊️',600,120,26]] },
+  neoncity:   { ground:'paving', wall:'dark', base:['stars','skyline'], props:[['🌃',130,300,60],['🚦',260,300,44],['🏮',700,220,40],['🕹️',820,300,44]] },
+  pyramids:   { ground:'desert', base:['dunes'], props:[['🔺',150,300,150],['🔺',330,300,90],['🗿',720,300,60],['🐫',830,300,54]] },
+  fjord:      { ground:'rock', base:['water','hills'], props:[['⛴️',200,262,64],['🏠',760,300,50],['🔭',840,300,30]] },
+  bazaar:     { ground:'gravel', base:['stall'], props:[['🕌',150,150,60],['🌶️',130,270,34],['🧶',770,270,34],['🏺',620,300,34],['🐪',300,300,40]] },
+  outback:    { ground:'desert', props:[['🌵',120,300,60],['🦘',240,300,56],['🌵',720,300,50],['⛽',820,300,50],['🌵',860,300,36]] },
+  /* nature */
+  farm:       { ground:'meadow', base:['longfence'], props:[['🏚️',140,300,90],['🐄',240,300,44],['🐐',720,300,40],['🐓',800,300,30],['🚜',860,300,44]] },
+  stables:    { ground:'mud', base:['longfence'], props:[['🐴',140,300,64],['🐎',740,300,56],['🏠',830,300,60]] },
+  birdlake:   { ground:'autumn', base:['lake','autumntrees'], props:[['🦆',300,286,34],['🦢',600,286,36],['🔭',830,300,30]] },
+  butterfly:  { ground:'jungle', wall:'glass', base:['windows'], props:[['🦋',140,150,56],['🦋',300,90,40],['🌺',130,300,54],['🦋',720,120,48],['🌸',770,300,54],['🐛',840,300,30]] },
+  dogpark:    { ground:'grass', base:['trees'], props:[['🐕',150,300,50],['🐩',300,300,40],['🐕',720,300,44],['💦',830,300,36]] },
+  dolphins:   { ground:'paving', base:['pool'], props:[['🐬',140,240,70],['🐬',760,250,56],['🪑',300,300,30],['🎁',840,300,30]] },
+  cavepark:   { ground:'rock', wall:'cave', props:[['🕯️',130,300,44],['🦇',300,140,40],['🦇',600,110,32],['💧',740,300,44],['🗿',820,300,50]] },
+  dinopark:   { ground:'jungle', base:['trees'], props:[['🦖',140,300,100],['🦕',740,300,110],['⛏️',300,300,30]] },
+  /* sport */
+  marathon:   { ground:'paving', base:['houses'], props:[['🏁',150,300,54],['🏃',260,300,44],['💧',720,300,36],['🏃',820,300,40]] },
+  tennis:     { ground:'clay', base:['court'], props:[['🎾',150,300,40],['🏆',760,300,44],['🍹',840,300,30]] },
+  skatepark:  { ground:'paving', props:[['🛹',150,300,50],['🛹',300,280,36],['🎧',720,300,34],['🛹',820,300,44]] },
+  swimmeet:   { ground:'coolfloor', wall:'cool', base:['pool'], props:[['🥇',150,300,40],['🏊',300,270,40],['🏊',700,270,40],['🪑',830,300,30]] },
+  cycling:    { ground:'grass', base:['road','hills'], props:[['🚴',150,300,50],['🚴',260,300,40],['🏘️',760,300,64]] },
+  gym:        { ground:'coolfloor', wall:'cool', props:[['🏋️',150,300,56],['🧘',300,300,40],['🛎️',720,300,30],['🚴',820,300,44]] },
+  basketball: { ground:'clay', base:['court'], props:[['🏀',150,300,44],['🪑',300,300,30],['🏀',820,300,40]] },
+  karting:    { ground:'rock', base:['track'], props:[['🏎️',150,300,60],['🔧',300,300,30],['🏆',760,300,44],['🏁',840,300,40]] },
+  golf:       { ground:'grass', base:['greenhills'], props:[['⛳',150,300,56],['🏌️',760,300,50],['🌳',850,300,60]] },
+  climbing:   { ground:'coolfloor', wall:'cool', base:['wall'], props:[['🧗',140,250,60],['🧱',300,300,30],['🧒',760,260,40],['🧗',840,240,44]] },
+  /* fun */
+  themepark:  { ground:'paving', base:['bunting'], props:[['🎢',130,300,140],['🎠',760,300,90],['🎡',850,300,70],['🎈',300,240,30]] },
+  theater:    { ground:'carpet', wall:'red', base:['lights'], props:[['🎭',150,150,70],['🥂',300,300,34],['🎭',740,150,60],['🚪',840,300,44]] },
+  arcade:     { ground:'dark', wall:'dark', base:['stars'], props:[['🕹️',150,300,60],['🧸',300,300,36],['🕺',720,300,48],['🎰',830,300,50]] },
+  comiccon:   { ground:'coolfloor', wall:'cool', base:['windows'], props:[['🦸',150,300,60],['🖌️',300,300,30],['🦹',740,300,56],['🎤',840,300,34]] },
+  balloonfest:{ ground:'meadow', base:['balloons','greenhills'], props:[['🎈',600,120,44],['⛰️',820,300,60,0.8]] },
+  filmset:    { ground:'gravel', props:[['🎥',150,300,60],['🎬',260,300,40],['🍽️',700,300,36],['🚐',820,300,54]] },
+  puppet:     { ground:'floor', wall:'warm', base:['lights'], props:[['🧸',150,300,60],['🎟️',280,300,30],['🎭',740,150,50],['🌷',830,300,36]] },
+  artfair:    { ground:'paving', base:['trees'], props:[['🎨',150,300,56],['🗿',280,300,50],['🖼️',720,240,56],['🥂',840,300,30]] },
+  musicschool:{ ground:'floor', wall:'warm', props:[['🎻',150,300,56],['🎹',300,300,48],['🎺',720,300,40],['🎼',820,220,40]] },
+  flea:       { ground:'gravel', base:['stall'], props:[['🕰️',130,270,34],['🧸',770,270,34],['🛒',620,300,40],['📻',300,300,30]] },
+  /* wild */
+  moonbase:   { ground:'moon', wall:'space', base:['stars'], props:[['🌍',150,170,56],['🚀',740,300,70],['🛸',300,190,48],['🚪',840,300,40]] },
+  pirateship: { ground:'deck', base:['water'], props:[['🦜',150,240,44],['🗡️',280,300,34],['⚓',740,300,50],['💰',840,300,36],['🏴',150,300,44]] },
+  castle:     { ground:'grass', props:[['🏯',150,300,140],['🛡️',300,300,34],['🌉',740,300,80],['🦢',840,300,30]] },
+  lighthouse: { ground:'rock', base:['water'], props:[['🗼',150,300,120],['🌅',150,150,50],['⛵',700,258,40],['🎣',830,300,36]] },
+  volcano:    { ground:'lava', props:[['🌋',150,300,160],['🔥',300,300,40],['🌋',780,300,110],['🦎',850,300,30]] },
+  spacecenter:{ ground:'coolfloor', wall:'cool', base:['windows'], props:[['🚀',150,300,90],['🛰️',300,150,40],['🕹️',720,300,40],['👩‍🚀',830,300,50]] },
+  treehouse:  { ground:'grass', base:['trees'], props:[['🏡',150,190,70],['🌳',150,300,90],['🌉',450,200,60],['🏡',760,180,60],['🌳',760,300,84]] },
+  robotfactory:{ ground:'coolfloor', wall:'concrete', props:[['🤖',150,300,60],['🔧',300,300,34],['⚙️',720,220,44],['🤖',830,300,50]] },
+  underwater: { ground:'coolfloor', wall:'sea', base:['bubbles'], props:[['🐙',150,150,70],['🐠',300,100,40],['🐟',600,80,36],['🦈',760,150,70],['🐚',840,300,30]] },
+  wizardfair: { ground:'autumn', wall:'deepnight', base:['stars','lights','bunting'], props:[['🧙',150,300,64],['🧪',280,300,36],['🐉',740,300,80],['🔮',840,300,36]] }
+};
+Object.keys(SCENES).forEach(function (k) { BACKDROPS[k] = scene(SCENES[k]); });
+
 function paintBackdrop(kind, weatherKey) {
   var b = BACKDROPS[kind] || BACKDROPS.street;
   var w = WEATHER[weatherKey], m = MODE();
@@ -2299,14 +2789,18 @@ function renderFinale() {
            '<small>' + t('badge.' + b[1] + '.desc') + '</small></div></div>';
   }).join('');
 
-  /* the map: which adventures are done */
+  /* the sticker album: which adventures are done, one row per world */
   var prog = loadProgress();
   var wonCount = MODES.filter(function (x) { return prog[x.id] && prog[x.id].won; }).length;
   $('#finMap').innerHTML = '<div class="fin-map-k">' + t('fin.map', { n: wonCount, total: MODES.length }) + '</div>' +
-    '<div class="fin-map-row">' + MODES.map(function (x) {
-      var p = prog[x.id];
-      return '<span class="fin-map-tile' + (p && p.won ? ' won' : p && p.plays ? ' tried' : '') + '" title="' + t('mode.' + x.id + '.name') + '">' + x.emoji + '</span>';
-    }).join('') + '</div>';
+    MODE_GROUPS.map(function (g) {
+      return '<div class="fin-map-row"><span class="fin-map-world" title="' + t('group.' + g) + '">' + t('group.' + g + '.emoji') + '</span>' +
+        MODES.filter(function (x) { return x.group === g; }).map(function (x) {
+          var p = prog[x.id];
+          return '<span class="fin-map-tile' + (p && p.won ? ' won' : p && p.plays ? ' tried' : '') + (x.id === S.mode ? ' here' : '') +
+                 '" title="' + t('mode.' + x.id + '.name') + '">' + x.emoji + '</span>';
+        }).join('') + '</div>';
+    }).join('');
 }
 
 /* ───────────────────────────── boot ───────────────────────────── */
