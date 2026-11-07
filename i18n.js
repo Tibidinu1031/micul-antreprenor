@@ -1922,17 +1922,20 @@ addStrings('en', {
 
 /* ---------------------------------------------------------------- */
 
+/* Catalan, Spanish and French live in i18n.ca.js, i18n.es.js and i18n.fr.js,
+   which load after this file, so the saved choice is checked against this list. */
+var LANGS = ['ro', 'en', 'ca', 'es', 'fr'];
 var LANG_KEY = 'bossOfTheBlock.lang';
 var LANG = (function () {
   try {
     var s = localStorage.getItem(LANG_KEY);
-    if (s && I18N[s]) return s;
+    if (s && LANGS.indexOf(s) >= 0) return s;
   } catch (e) {}
   return 'ro';
 })();
 
 function setLang(code) {
-  if (!I18N[code]) return;
+  if (LANGS.indexOf(code) < 0 || !I18N[code]) return;
   LANG = code;
   try { localStorage.setItem(LANG_KEY, code); } catch (e) {}
 }
@@ -1946,14 +1949,14 @@ function nDe(n, noun) {
   return n + (n >= 20 && !(r >= 1 && r <= 19) ? ' de ' : ' ') + noun;
 }
 
-/* the game speaks Fahrenheit internally; Romanian readers get Celsius */
+/* the game speaks Fahrenheit internally; everyone but English readers gets Celsius */
 function temp(f) {
-  return LANG === 'ro' ? Math.round((f - 32) * 5 / 9) + '°C' : f + '°F';
+  return LANG !== 'en' ? Math.round((f - 32) * 5 / 9) + '°C' : f + '°F';
 }
 
 /* t('some.key', {n: 3}) — missing keys fall back to English, then to the key */
 function t(key, vars) {
-  var s = I18N[LANG][key];
+  var s = (I18N[LANG] || I18N.en)[key];
   if (s === undefined) s = I18N.en[key];
   if (s === undefined) return key;
   if (vars) {

@@ -2312,7 +2312,7 @@ function simFrame(now) {
   $('#simBarFill').style.width = (p * 100) + '%';
   var mins = 10 * 60 + p * 7 * 60;
   var hh = Math.floor(mins / 60), mm = Math.floor(mins % 60);
-  $('#simClock').textContent = LANG === 'ro'
+  $('#simClock').textContent = LANG !== 'en'
     ? hh + ':' + (mm < 10 ? '0' : '') + mm
     : (hh > 12 ? hh - 12 : hh) + ':' + (mm < 10 ? '0' : '') + mm + (hh >= 12 ? ' PM' : ' AM');
 

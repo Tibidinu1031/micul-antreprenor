@@ -8,7 +8,8 @@ noi și luând decizii în fiecare zi.
 
 *A business simulator for 6–10-year-olds with 100 adventures in ten worlds, extra
 stands to open and a decision card most days. The game ships in Romanian by
-default, with a Română / English switch on the title screen and in the stand menu.*
+default, with a Română / English / Català / Español / Français switch on the title
+screen and in the stand menu.*
 
 ## Cum se joacă / Playing it
 
@@ -109,7 +110,7 @@ jucând simplu; Magnat presupune că folosești toate pârghiile.
 ## Meniul standului (butonul ⋯)
 
 - **Redenumește standul** — se schimbă și firma pictată de pe stand.
-- **Schimbă limba** — Română / English, fără să pierzi partida în curs.
+- **Schimbă limba** — Română / English / Català / Español / Français, fără să pierzi partida în curs.
 - **Reia sezonul** — aceeași aventură, de la ziua 1, cu vreme nouă.
 - **Aventură nouă** — înapoi la harta cu cele 24 de locuri.
 
@@ -118,7 +119,10 @@ jucând simplu; Magnat presupune că folosești toate pârghiile.
 ```
 index.html    structura paginii
 styles.css    tot sistemul vizual
-i18n.js       textele, în română și engleză
+i18n.js       textele, în română și engleză (plus funcția t() și schimbarea limbii)
+i18n.ca.js    textele în catalană (aceleași chei ca în engleză)
+i18n.es.js    textele în spaniolă
+i18n.fr.js    textele în franceză
 game.js       simularea, economia, animația, graficele
 ```
 
@@ -129,7 +133,8 @@ multiplicator față de Standul din Cartier), țintele lor sunt `MODE_GOALS`, ca
 sunt `CARDS`, iar decorurile animate sunt `BACKDROPS` (primele 24 desenate de
 mână) și `SCENES` (restul, descrise ca date: culoarea solului, câteva piese de
 decor reutilizabile și emoji așezate pe scenă). Textele se schimbă doar în
-`i18n.js`.
+`i18n.js` și în `i18n.ca.js`, `i18n.es.js`, `i18n.fr.js` (o cheie lipsă într-o
+limbă cade automat pe engleză).
 
 Pentru verificarea echilibrului, `game.js` expune `window.BOB` (motorul fără
 interfață), astfel încât un script Node poate juca sezoane întregi.
